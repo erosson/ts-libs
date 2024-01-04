@@ -32,6 +32,7 @@ jobs:
         uses: actions/configure-pages@v4
       - run: |
           yarn
+          yarn test
           yarn docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
