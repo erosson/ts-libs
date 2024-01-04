@@ -1,0 +1,22 @@
+{
+  "name": "@erosson/polynomial",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "yarn docs && vite",
+    "build": "tsc && vite build",
+    "test": "vitest",
+    "docs": "typedoc src/polynomial.ts --out public/docs",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "break_infinity.js": "^2.2.0",
+    "decimal.js": "^10.4.3",
+    "prettier": "^3.1.1",
+    "typedoc": "^0.25.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vitest": "^1.1.1"
+  }
+}
