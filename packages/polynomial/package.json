@@ -1,8 +1,16 @@
 {
   "name": "@erosson/polynomial",
   "version": "0.0.0",
-  "type": "module",
   "packageManager": "yarn@1.22.19",
+  "type": "module",
+  "main": "./dist/polynomial.umd.cjs",
+  "module": "./dist/polynomial.js",
+  "exports": {
+    ".": {
+      "import": "./dist/polynomial.js",
+      "require": "./dist/polynomial.umd.cjs"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -25,6 +33,7 @@
     "typedoc": "^0.25.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.7.0",
     "vitest": "^1.1.1"
   }
 }
