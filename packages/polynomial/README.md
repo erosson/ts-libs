@@ -31,4 +31,8 @@ Poly.toString(p)  // "t^2 + 2 t + 3"
 
 `npm install --save https://github.com/erosson/polynomial`
 
+or
+
 `yarn add https://github.com/erosson/polynomial`
+
+TODO npm
