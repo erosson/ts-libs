@@ -6,6 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "dev": "yarn docs && vite",
     "build": "tsc && vite build",

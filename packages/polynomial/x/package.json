@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@erosson/polynomial": "^1.0.5"
+  }
+}
