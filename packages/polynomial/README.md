@@ -2,7 +2,7 @@ Polynomials for Typescript.
 
 ```ts
 import Poly from "@erosson/polynomial"
-// "var Poly = require("break_infinity.js");" also works
+// `var Poly = require("@erosson/polynomial");` also works
 
 const p = Poly.parse([3,2,1])
 
@@ -34,5 +34,3 @@ Poly.toString(p)  // "t^2 + 2 t + 3"
 or
 
 `yarn add https://github.com/erosson/polynomial`
-
-TODO npm
