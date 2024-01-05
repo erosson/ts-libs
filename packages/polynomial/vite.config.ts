@@ -8,6 +8,11 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src/polynomial.ts'),
             name: "Poly",
+            // I'd like this to work via jsdelivr, which sadly requires a .js extension.
+            // The default output of .cjs, etc. is no good.
+            fileName(format, entryName) {
+                return format === 'es' ? `${entryName}.esm.js` : `${entryName}.umd.js`
+            },
         },
         sourcemap: true,
         rollupOptions: {
@@ -16,5 +21,5 @@ export default defineConfig({
             output: { exports: "named" }
         }
     },
-    plugins: [dts({ rollupTypes: true })],
+    plugins: [dts()],
 })

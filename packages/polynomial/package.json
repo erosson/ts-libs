@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "packageManager": "yarn@1.22.19",
   "type": "module",
-  "main": "./dist/polynomial.umd.cjs",
-  "module": "./dist/polynomial.js",
+  "main": "./dist/polynomial.umd.js",
+  "module": "./dist/polynomial.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/polynomial.js",
-      "require": "./dist/polynomial.umd.cjs"
+      "import": "./dist/polynomial.esm.js",
+      "require": "./dist/polynomial.umd.js"
     }
   },
   "publishConfig": {
