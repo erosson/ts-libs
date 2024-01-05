@@ -3,9 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "dev": "yarn docs && vite",
     "build": "tsc && vite build",
+    "prepack": "yarn build",
     "test": "vitest",
     "docs": "typedoc src/polynomial.ts --out public/docs",
     "preview": "vite preview"

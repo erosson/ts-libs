@@ -4,7 +4,11 @@ export { type Polynomial, PolynomialImpl, type PolyProperties } from './backend'
 /**
  * Polynomials composed of Javascript's built-in numbers.
  * 
- *     const p = Native.parse([3,2,1])
+ *     import Poly from "@erosson/polynomial"
+ *     // equivalent to:
+ *     // import {Native as Poly} from "@erosson/polynomial"
+ * 
+ *     const p = Poly.parse([3,2,1])
  *     p.toString()  // t^2 + 2t + 3
  */
 export const Native = new PolynomialImpl<number>({
@@ -36,6 +40,14 @@ export const Native = new PolynomialImpl<number>({
 // users not working with decimals can simply use the default export
 export default Native
 
+/**
+ * A {@link https://mikemcl.github.io/decimal.js/ | Decimal.js-compatible number}.
+ * This matches Decimal.js's interface, without adding an explcit Decimal.js dependency.
+ * 
+ * Tested with Decimal.js itself, and {@link https://patashu.github.io/break_infinity.js/index.html break_infinity.js}.
+ * 
+ * @param T The number type. An implementation for the `Decimal` type would be typed as `IDecimal<Decimal>`.
+ */
 export interface IDecimal<T extends IDecimal<T>> {
   equals(this: T, a: number | T): boolean
   lessThan(this: T, a: number | T): boolean
@@ -47,6 +59,15 @@ export interface IDecimal<T extends IDecimal<T>> {
   toString(): string
 }
 
+/**
+ * Polynomials composed of {@link https://mikemcl.github.io/decimal.js/ | Decimal.js-compatible numbers}. Pass this function your number's constructor.
+ * 
+ *     import Decimal from "decimal.js"
+ *     import * as P from "@erosson/polynomial"
+ * 
+ *     const Poly = new P.Decimal<Decimal>(n => new Decimal(n))
+ *     Poly.toString(Poly.parse([new Decimal(3), new Decimal(2), new Decimal(1)])) // "t^2 + 2 t + 3"
+ */
 export function Decimal<T extends IDecimal<T>>(ctor: (n: number) => T): PolynomialImpl<T> {
   return new PolynomialImpl<T>({
     zero: ctor(0),

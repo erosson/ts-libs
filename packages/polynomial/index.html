@@ -12,8 +12,10 @@
   <a href="/docs/index.html">docs</a>
   <div id="app"></div>
   <script type="module">
-    import Poly from "/src/polynomial.ts"
-    window.Poly = Poly
+    // import * as Poly from "/src/polynomial.ts"
+    import Decimal from "decimal.js"
+    // window.Poly = Poly
+    window.Decimal = Decimal
     console.info("To try out the library in this console, use %cwindow.Poly", 'font-family: monospace; font-weight: bold;')
   </script>
 </body>
