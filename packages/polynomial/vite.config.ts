@@ -5,7 +5,7 @@ export default defineConfig({
     build: {
         // https://vitejs.dev/guide/build.html#library-mode
         lib: {
-            entry: resolve(__dirname, 'src/main.ts'),
+            entry: resolve(__dirname, 'src/polynomial.ts'),
             name: "ViteLib",
         }
     }
