@@ -11,10 +11,13 @@
 <body>
   <a href="/docs/index.html">docs</a>
   <div id="app"></div>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script> -->
   <script type="module">
-    // import * as Poly from "/src/polynomial.ts"
+    import * as Poly from "/src/polynomial.ts"
+    // import * as Poly from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
+    // import * as Poly from "https://esm.run/@erosson/polynomial"
     import Decimal from "decimal.js"
-    // window.Poly = Poly
+    window.Poly = Poly
     window.Decimal = Decimal
     console.info("To try out the library in this console, use %cwindow.Poly", 'font-family: monospace; font-weight: bold;')
   </script>

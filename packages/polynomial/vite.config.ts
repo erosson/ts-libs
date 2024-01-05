@@ -8,6 +8,11 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src/polynomial.ts'),
             name: "Poly",
+            // This module works both in the browser and in node.
+            // Some cdns (like jsdelivr) require a `.js` extension, so node's `.cjs` and `.mjs` are no good.
+            fileName(format, entryName) {
+                return format === 'es' ? `${entryName}.esm.js` : `${entryName}.umd.js`
+            },
         },
         sourcemap: true,
         rollupOptions: {
@@ -16,5 +21,5 @@ export default defineConfig({
             output: { exports: "named" }
         }
     },
-    plugins: [dts({ rollupTypes: true })],
+    plugins: [dts()],
 })
