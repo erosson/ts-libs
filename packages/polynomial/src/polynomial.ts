@@ -224,6 +224,33 @@ export class Polynomial<T = number> {
   }
 
   /**
+   * True if the given value is a root of this polynomial - that is, if `evaluate(t) === 0` for this t.
+   * 
+   * @param tolerance floating point imprecision allowed for this to return true
+   */
+  isRoot(t: number, tolerance = 1e-2): boolean {
+    // `toNumber` is safe, roots should be very close to zero
+    const value = this.ops.toNumber(this.evaluate(t));
+    const isRoot = tolerance === 0 ? value === 0 : Math.abs(value) < tolerance;
+    return isRoot;
+  }
+
+  /**
+   * Try to find at least one root of this polynomial - that is, the values of `t` where `evaluate(t) === 0`.
+   * 
+   * For polynomials with degree <= 4, we use exact formulas to find one. For larger polynomials, we use {@link https://en.wikipedia.org/wiki/Newton%27s_method | Newton's method}, which will be slower and less accurate.
+   * 
+   * @todo Newton's method not yet implemented - polynomials with degree >= 5 throw an error
+   * 
+   * https://en.wikipedia.org/wiki/Polynomial_root-finding_algorithms
+   */
+  findRoots(): ReadonlySet<number> {
+    const rawRoots = findRoots(this);
+    // remove dupes and NaNs
+    return new Set(rawRoots.filter((r) => !isNaN(r)));
+  }
+
+  /**
    * Transform a polynomial to a list of `[formatted-coefficient, degree]`, suitable for string formatting.
    * You could use this to implement an HTML representation, for example.
    * 
@@ -285,75 +312,77 @@ function zip<T>(a: readonly T[], b: readonly T[]): readonly (readonly [T | null,
   }
 }
 
-//export function isRoot(poly: Polynomial, t: Temporal.Duration, tolerance = 1e-2): boolean {
-//	const calc_ = evaluate(poly, t);
-//	// const isRoot_ = calc_ === 0;
-//	const isRoot_ = tolerance === 0 ? calc_ === 0 : Math.abs(calc_) < tolerance;
-//	// if (!isRoot_) console.log("isRoot", { poly, t, isRoot_, calc_ });
-//	return isRoot_;
-//}
-//export function findRoots(poly: Polynomial): Set<Temporal.Duration> {
-//	const rawRoots = _findRoots(poly);
-//	// remove dupes and NaNs
-//	return new Set(
-//		rawRoots.filter((r) => !isNaN(r)).map((r) => Temporal.Duration.from({ seconds: r }))
-//	);
-//}
-//function toDegreeTuple(
-//	poly: Polynomial
-//):
-//	| [number]
-//	| [number, number]
-//	| [number, number, number]
-//	| [number, number, number, number]
-//	| number[] {
-//	// because typescript destructuring in _findRoots is uncooperative
-//	if (poly[1] == null) return poly as [number];
-//	if (poly[2] == null) return poly as unknown as [number, number];
-//	if (poly[3] == null) return poly as unknown as [number, number, number];
-//	if (poly[4] == null) return poly as unknown as [number, number, number, number];
-//	return poly;
-//}
-//function _findRoots(poly: Polynomial): number[] {
-//	const tuple = toDegreeTuple(poly);
-//	switch (tuple.length) {
-//		case 0:
-//		case 1: {
-//			return [];
-//		}
-//		case 2: {
-//			// linear: x = -b/a
-//			const [b, a] = tuple;
-//			return [-b / a];
-//		}
-//		case 3: {
-//			// quadratic: x = [-b ± √(b2 – 4ac)]/2a
-//			const [c, b, a] = tuple;
-//			const disc = b * b - 4 * a * c;
-//			const denom = 2 * a;
-//			const sqrtDisc = Math.sqrt(disc);
-//			return [(-b + sqrtDisc) / denom, (-b - sqrtDisc) / denom];
-//		}
-//		case 4: {
-//			// cubic: https://math.vanderbilt.edu/schectex/courses/cubic/
-//			// x = {q + [q2 + (r-p2)3]1/2}1/3   +   {q - [q2 + (r-p2)3]1/2}1/3   +   p
-//			// where
-//			// p = -b/(3a),   q = p3 + (bc-3ad)/(6a2),   r = c/(3a)
-//			const [d, c, b, a] = tuple;
-//			const p = -b / (3 * a);
-//			const q = Math.pow(p, 3) + (b * c - 3 * a * d) / (6 * Math.pow(a, 2));
-//			const r = c / (3 * a);
-//			const disc = Math.pow(q, 2) + Math.pow(r - Math.pow(p, 2), 3);
-//			const sqrtDisc = Math.sqrt(disc);
-//			return [p + Math.cbrt(q + sqrtDisc) + Math.cbrt(q - sqrtDisc)];
-//		}
-//		default: {
-//			// TODO use newton's method for higher-degree polynomials
-//			throw new Error(
-//				`roots of polynomials of degree ${poly.length - 1} (length ${
-//					poly.length
-//				}) not yet implemented`
-//			);
-//		}
-//	}
-//}
+function findRoots<T>(poly: Polynomial<T>): readonly number[] {
+  const tuple = toCoeffsTuple(poly);
+  const o = poly.ops
+  switch (tuple.length) {
+    case 0:
+    case 1: {
+      return [];
+    }
+    case 2: {
+      // linear: x = -b/a
+      const [b, a] = tuple;
+      // return [-b / a];
+      return [o.toNumber(o.divT(o.mul(b, -1), a))];
+    }
+    case 3: {
+      // quadratic: x = [-b ± √(b2 – 4ac)]/2a
+      const [c, b, a] = tuple;
+      // const disc = b * b - 4 * a * c;
+      const disc = o.sub(o.mulT(b, b), o.mul(o.mulT(a, c), 4))
+      // const denom = 2 * a;
+      const denom = o.mul(a, 2)
+      // const sqrtDisc = Math.sqrt(disc);
+      const sqrtDisc = o.sqrt(disc)
+      // return [(-b + sqrtDisc) / denom, (-b - sqrtDisc) / denom];
+      return [
+        o.toNumber(o.divT((o.add(o.mul(b, -1), sqrtDisc)), denom)),
+        o.toNumber(o.divT((o.sub(o.mul(b, -1), sqrtDisc)), denom)),
+      ]
+    }
+    case 4: {
+      // cubic: https://math.vanderbilt.edu/schectex/courses/cubic/
+      // x = {q + [q2 + (r-p2)3]1/2}1/3   +   {q - [q2 + (r-p2)3]1/2}1/3   +   p
+      // where
+      // p = -b/(3a),   q = p3 + (bc-3ad)/(6a2),   r = c/(3a)
+      const [d, c, b, a] = tuple;
+      // const p = -b / (3 * a);
+      const p = o.divT(o.mul(b, -1), o.mul(a, 3))
+      // const q = Math.pow(p, 3) + (b * c - 3 * a * d) / (6 * Math.pow(a, 2));
+      const q = o.add(o.pow(p, 3), o.divT(o.sub(o.mulT(b, c), o.mul(o.mulT(a, d), 3)), o.mul(o.mulT(a, a), 6)))
+      // const r = c / (3 * a);
+      const r = o.divT(c, o.mul(a, 3))
+      // const disc = Math.pow(q, 2) + Math.pow(r - Math.pow(p, 2), 3);
+      const disc = o.add(o.mulT(q, q), o.pow(o.sub(r, o.mulT(p, p)), 3));
+      // const sqrtDisc = Math.sqrt(disc);
+      const sqrtDisc = o.sqrt(disc);
+      // return [p + Math.cbrt(q + sqrtDisc) + Math.cbrt(q - sqrtDisc)];
+      return [o.toNumber(o.add(o.add(p, o.cbrt(o.add(q, sqrtDisc))), o.cbrt(o.sub(q, sqrtDisc))))];
+    }
+    default: {
+      // TODO use newton's method for higher-degree polynomials
+      throw new Error(
+        `roots of polynomials of degree ${tuple.length - 1} (length ${tuple.length
+        }) not yet implemented`
+      );
+    }
+  }
+}
+/**
+ * because the return type has better destructuring
+ */
+function toCoeffsTuple<T>(
+  poly: Polynomial<T>
+):
+  | readonly [T]
+  | readonly [T, T]
+  | readonly [T, T, T]
+  | readonly [T, T, T, T]
+  | readonly T[] {
+  if (poly.coeffs[1] == null) return poly.coeffs as [T];
+  if (poly.coeffs[2] == null) return poly.coeffs as unknown as [T, T];
+  if (poly.coeffs[3] == null) return poly.coeffs as unknown as [T, T, T];
+  if (poly.coeffs[4] == null) return poly.coeffs as unknown as [T, T, T, T];
+  return poly.coeffs;
+}

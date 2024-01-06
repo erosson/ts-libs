@@ -63,6 +63,31 @@ describe("native", () => {
         step([0, 9999], "9999 t + 0");
         step([0, -9999], "-9999 t + 0");
     });
+
+    test('roots', () => {
+        function step(rp: number[], expected: number[]) {
+            const p = P.Polynomial.parse(rp);
+            expect(p.findRoots()).toEqual(new Set(expected));
+            for (const e of expected) {
+                expect(p.isRoot(e)).toBe(true);
+                // test cases are written to be integers, so zero-float-tolerance is fine
+                expect(p.isRoot(e, 0)).toBe(true);
+                // test cases are written to be farther apart than this
+                expect(p.isRoot(e + 0.1)).toBe(false);
+            }
+        }
+        step([-8, 2], [4]);
+        step([-32, 0, 2], [4, -4]);
+        step([-128, 0, 0, 2], [4]);
+
+        // this should be [4,-4], but it's not implemented yet
+        expect(() => P.Polynomial.parse([-512, 0, 0, 0, 2]).findRoots()).toThrow(
+            'roots of polynomials of degree 4 (length 5) not yet implemented'
+        );
+
+        step([], []);
+        step([-2], []);
+    });
 });
 
 test('decimal types line up', () => {
@@ -135,30 +160,29 @@ describe.each(decimalCases)("decimal: $name", ({ ops, ctor }) => {
         step([0, 9999], "9999 t + 0");
         step([0, -9999], "-9999 t + 0");
     });
-});
 
-// test('roots', () => {
-// 	function step(rp: number[], expectedN: number[]) {
-// 		const expected = expectedN.map((e) => Temporal.Duration.from({ seconds: e }));
-// 		const p = P.Polynomial.parse(rp);
-// 		expect(P.findRoots(p)).toEqual(new Set(expected));
-// 		for (const e of expected) {
-// 			expect(P.isRoot(p, e)).toBe(true);
-// 			// test cases are written to be integers, so zero-float-tolerance is fine
-// 			expect(P.isRoot(p, e, 0)).toBe(true);
-// 			// test cases are written to be farther apart than this
-// 			expect(P.isRoot(p, e.add({ milliseconds: 100 }))).toBe(false);
-// 		}
-// 	}
-// 	step([-8, 2], [4]);
-// 	step([-32, 0, 2], [4, -4]);
-// 	step([-128, 0, 0, 2], [4]);
-//
-// 	// this should be [4,-4], but it's not implemented
-// 	expect(() => P.findRoots(P.Polynomial.parse([-512, 0, 0, 0, 2]))).toThrow(
-// 		'roots of polynomials of degree 4 (length 5) not yet implemented'
-// 	);
-//
-// 	step([], []);
-// 	step([-2], []);
-// });
+    test('roots', () => {
+        function step(rp: number[], expected: number[]) {
+            const p = P.Polynomial.parse(rp.map(ctor), ops);
+            expect(p.findRoots()).toEqual(new Set(expected));
+            for (const e of expected) {
+                expect(p.isRoot(e)).toBe(true);
+                // test cases are written to be integers, so zero-float-tolerance is fine
+                expect(p.isRoot(e, 0)).toBe(true);
+                // test cases are written to be farther apart than this
+                expect(p.isRoot(e + 0.1)).toBe(false);
+            }
+        }
+        step([-8, 2], [4]);
+        step([-32, 0, 2], [4, -4]);
+        step([-128, 0, 0, 2], [4]);
+
+        // this should be [4,-4], but it's not implemented yet
+        expect(() => P.Polynomial.parse([-512, 0, 0, 0, 2].map(ctor), ops).findRoots()).toThrow(
+            'roots of polynomials of degree 4 (length 5) not yet implemented'
+        );
+
+        step([], []);
+        step([-2], []);
+    });
+});
