@@ -29,19 +29,19 @@ Poly.toString(p)  // "t^2 + 2 t + 3"
 
 ## Usage
 
-In the browser:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script>
-<script>
-    // it's now at `Poly` or `window.Poly`
-</script>
-```
+In the browser, pick an import style:
 
 ```html
 <script type="module">
     import Poly from "https://esm.run/@erosson/polynomial@latest"
     ...
+</script>
+```
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script>
+<script>
+    // it's now at `Poly` or `window.Poly`
 </script>
 ```
 
@@ -53,7 +53,7 @@ In Node, to install via Yarn:
 
 `yarn add https://github.com/erosson/polynomial`
 
-Once installed, use one of these:
+Once installed, pick an import style:
 
 ```ts
 import Poly from "@erosson/polynomial"
