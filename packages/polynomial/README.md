@@ -2,7 +2,6 @@ Polynomials for Typescript.
 
 ```ts
 import Poly from "@erosson/polynomial"
-// `var Poly = require("@erosson/polynomial");` also works
 
 const p = Poly.parse([3,2,1])
 
