@@ -93,30 +93,30 @@
       return test(id, () => Polynomial.parse([3, 2, 1]).toString() === "t^2 + 2 t + 3")
     }
   </script>
-  <!-- cached, try @latest again in 24 hours (2024/01/05) -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"></script>
+  <!-- cached, try @latest again in 24 hours. @2.0.0 works until then. (2024/01/05) -->
+  <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"></script> -->
   <script>
     polytest('script-jsdelivr', window.Polynomial.Polynomial)
   </script>
   <script type="module">
-    // import { Polynomial } from "https://esm.run/@erosson/polynomial@latest"
-    import { Polynomial } from "https://esm.run/@erosson/polynomial@2.0.0"
+    import { Polynomial } from "https://esm.run/@erosson/polynomial@latest"
+    // import { Polynomial } from "https://esm.run/@erosson/polynomial@2.0.0"
     polytest('esm-run', Polynomial)
   </script>
   <script type="module">
-    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"
-    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"
+    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"
+    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"
     polytest('jsdelivr-default', window.Polynomial.Polynomial)
   </script>
   <script type="module">
-    // import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
-    import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.esm.js"
+    import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
+    // import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.esm.js"
     polytest('jsdelivr-esm', Polynomial)
   </script>
   <script type="module">
-    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js"
-    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.umd.js"
+    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js"
+    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.umd.js"
     polytest('jsdelivr-umd', window.Polynomial.Polynomial)
   </script>
   <script type="module">
