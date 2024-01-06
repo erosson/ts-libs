@@ -10,12 +10,121 @@
 
 <body>
   <a href="/docs/index.html">docs</a>
-  <div id="app"></div>
+  <p>To try out the library in this page's Javascript console, use <code>window.Polynomial</code> or
+    <code>window.P</code>
+  </p>
+  <p>CDN import tests:</p>
+  <style>
+    table,
+    tr,
+    td {
+      border: 1px solid black;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+  </style>
+  <table>
+    <tr>
+      <td style="font-family:monospace">
+        <br>
+        &lt;script src=&quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest&quot;&gt;&lt;/script&gt;<br>
+        <br>
+      </td>
+      <td id="script-jsdelivr"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Polynomial } from &quot;https://esm.run/@erosson/polynomial&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="esm-run"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest&quot;<br>
+        window.Polynomial.Polynomial<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-default"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Polynomial } from &quot;https://esm.run/@erosson/polynomial/dist/polynomial.esm.js&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-esm"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js&quot;<br>
+        window.Polynomial.Polynomial<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-umd"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Polynomial } from &quot;./src/polynomial.ts&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local"><i>loading...</i></td>
+    </tr>
+  </table>
+  <script>
+    function test(id, fn) {
+      let pass = '?'
+      try {
+        pass = fn() ? '<span style="color:green">pass</span>' : '<b style="color:red">FAIL</b>'
+      }
+      catch (e) {
+        console.error(id, e)
+        pass = '<b style="color:orange">ERROR</b>'
+      }
+      document.getElementById(id).innerHTML = pass
+    }
+    function polytest(id, Polynomial) {
+      return test(id, () => Polynomial.parse([3, 2, 1]).toString() === "t^2 + 2 t + 3")
+    }
+  </script>
+  <!-- cached, try @latest again in 24 hours (2024/01/05) -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"></script>
+  <script>
+    polytest('script-jsdelivr', window.Polynomial.Polynomial)
+  </script>
+  <script type="module">
+    // import { Polynomial } from "https://esm.run/@erosson/polynomial@latest"
+    import { Polynomial } from "https://esm.run/@erosson/polynomial@2.0.0"
+    polytest('esm-run', Polynomial)
+  </script>
+  <script type="module">
+    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"
+    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"
+    polytest('jsdelivr-default', window.Polynomial.Polynomial)
+  </script>
+  <script type="module">
+    // import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
+    import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.esm.js"
+    polytest('jsdelivr-esm', Polynomial)
+  </script>
+  <script type="module">
+    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js"
+    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.umd.js"
+    polytest('jsdelivr-umd', window.Polynomial.Polynomial)
+  </script>
+  <script type="module">
+    import { Polynomial } from "/src/polynomial.ts"
+    polytest('local', Polynomial)
+  </script>
   <script type="module">
     import * as P from "/src/polynomial.ts"
-    // import * as P from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
-    // import * as P from "https://esm.run/@erosson/polynomial"
     import Decimal from "decimal.js"
 
     window.P = P
