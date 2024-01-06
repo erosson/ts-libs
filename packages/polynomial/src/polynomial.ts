@@ -264,20 +264,48 @@ export class Polynomial<T = number> {
   }
 
   /**
+   * Will `{@link findRootsQuick}` work for this polynomial?
+   * 
+   * True if degree 3 or less, or (trivially) if the constant term is zero.
+   * 
+   * @group roots
+   */
+  get isRootQuick(): boolean {
+    return this.degree <= 3 || this.ops.equals(this.constantTerm, this.ops.zero)
+  }
+
+  /**
    * Try to find at least one root of this polynomial - that is, the values of `t` where `evaluate(t) === 0`.
    * 
-   * For polynomials with degree <= 4, we use exact formulas to find one. For larger polynomials, we use {@link https://en.wikipedia.org/wiki/Newton%27s_method | Newton's method}, which will be slower and less accurate.
+   * For polynomials with degree <= 3, we use exact formulas to find one. For larger polynomials, we use an iterative method, which will be slower and less accurate.
    * 
-   * @todo Newton's method not yet implemented - polynomials with degree >= 5 throw an error
+   * @todo polynomials with degree >= 4 not yet implemented, throw an error
    * 
    * https://en.wikipedia.org/wiki/Polynomial_root-finding_algorithms
    * 
    * @group roots
    */
-  findRoots(): ReadonlySet<number> {
-    const rawRoots = findRoots(this);
+  findRootsQuick(): ReadonlySet<number> {
+    const rawRoots = findRootsQuick(this);
     // remove dupes and NaNs
     return new Set(rawRoots.filter((r) => !isNaN(r)));
+  }
+
+  /**
+   * Does this polynomial start negative, grow continuously, and eventually become non-negative?
+   * 
+   * - is the constant term `coeffs[0]` negative?
+   * - are all non-constant terms `coeffs[1..]` non-negative?
+   * 
+   * If so, we can bisect it to approximate a root.
+   * 
+   * @group roots
+   */
+  get isRootBisectable(): boolean {
+    const nonconstantTerms = this.coeffs.slice(1)
+    return this.ops.lt(this.constantTerm, this.ops.zero)
+      && nonconstantTerms.length > 0
+      && nonconstantTerms.every(c => this.ops.gte(c, this.ops.zero))
   }
 
   /**
@@ -348,9 +376,10 @@ function zip<T>(a: readonly T[], b: readonly T[]): readonly (readonly [T | null,
   }
 }
 
-function findRoots<T>(poly: Polynomial<T>): readonly number[] {
+function findRootsQuick<T>(poly: Polynomial<T>): readonly number[] {
   const tuple = toCoeffsTuple(poly);
   const o = poly.ops
+  if (poly.ops.equals(poly.constantTerm, poly.ops.zero)) return [0]
   switch (tuple.length) {
     case 0:
     case 1: {
@@ -405,6 +434,7 @@ function findRoots<T>(poly: Polynomial<T>): readonly number[] {
     }
   }
 }
+
 /**
  * because the return type has better destructuring
  */

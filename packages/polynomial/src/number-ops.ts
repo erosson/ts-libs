@@ -29,6 +29,26 @@ export interface NumberOps<T> {
     equals(a: T, b: T): boolean;
 
     /**
+     * `a < b`
+     */
+    lt(a: T, b: T): boolean;
+
+    /**
+     * `a > b`
+     */
+    gt(a: T, b: T): boolean;
+
+    /**
+     * `a <= b`
+     */
+    lte(a: T, b: T): boolean;
+
+    /**
+     * `a <= b`
+     */
+    gte(a: T, b: T): boolean;
+
+    /**
      * Add two numbers.
      * 
      * For `NumberOps<number>`, this is `+`.
@@ -126,6 +146,18 @@ export const nativeNumberOps: NumberOps<number> = {
     equals(a, b) {
         return a === b;
     },
+    lt(a, b) {
+        return a < b;
+    },
+    gt(a, b) {
+        return a > b;
+    },
+    lte(a, b) {
+        return a <= b;
+    },
+    gte(a, b) {
+        return a >= b;
+    },
     add(a, b) {
         return a + b;
     },
@@ -180,6 +212,10 @@ export const nativeNumberOps: NumberOps<number> = {
  */
 export interface IDecimal<T extends IDecimal<T>> {
     equals(this: T, a: number | T): boolean
+    lt(this: T, a: number | T): boolean
+    gt(this: T, a: number | T): boolean
+    lte(this: T, a: number | T): boolean
+    gte(this: T, a: number | T): boolean
     lessThan(this: T, a: number | T): boolean
     add(this: T, a: number | T): T
     sub(this: T, a: number | T): T
@@ -200,6 +236,18 @@ class DecimalNumberOps<T extends IDecimal<T>> implements NumberOps<T> {
 
     equals(a: T, b: T): boolean {
         return a.equals(b);
+    }
+    lt(a: T, b: T): boolean {
+        return a.lt(b);
+    }
+    gt(a: T, b: T): boolean {
+        return a.gt(b);
+    }
+    lte(a: T, b: T): boolean {
+        return a.lte(b);
+    }
+    gte(a: T, b: T): boolean {
+        return a.gte(b);
     }
     add(a: T, b: T) {
         return a.add(b);
