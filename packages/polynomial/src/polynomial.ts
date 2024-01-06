@@ -21,6 +21,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     const p = Polynomial.parse([1,2,3])
    *     p.toString()  // "3 t^2 + 2 t + 1"
+   * 
+   * @group constructors
    */
   static parse(coeffs: readonly number[]): Polynomial<number>
   /**
@@ -30,6 +32,8 @@ export class Polynomial<T = number> {
    *     import Decimal from "decimal.js"
    *     const p = Polynomial.parse([new Decimal(1), new Decimal(2), new Decimal(3)], decimalNumberOps(Decimal))
    *     p.toString()  // "3 t^2 + 2 t + 1"
+   * 
+   * @group constructors
    */
   static parse<T>(coeffs: readonly T[], ops: NumberOps<T>): Polynomial<T>
   static parse(coeffs: readonly unknown[], ops: NumberOps<unknown> = nativeNumberOps): Polynomial<unknown> {
@@ -47,6 +51,8 @@ export class Polynomial<T = number> {
    * 
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.zero().toString()  // "0"
+   * 
+   * @group constructors
    */
   static zero(): Polynomial<number>
   /**
@@ -54,6 +60,8 @@ export class Polynomial<T = number> {
    * 
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.zero(decimalNumberOps(Decimal)).toString()  // "0"
+   * 
+   * @group constructors
    */
   static zero<T>(ops: NumberOps<T>): Polynomial<T>
   static zero(ops: NumberOps<unknown> = nativeNumberOps): Polynomial<unknown> {
@@ -109,6 +117,8 @@ export class Polynomial<T = number> {
    *     Polynomial.parse([3,2,1]).evaluate(0)  // 3
    *     Polynomial.parse([3,2,1]).evaluate(1)  // 6
    *     Polynomial.parse([3,2,1]).evaluate(2)  // 11
+   * 
+   * @group evaluate
    */
   evaluate(seconds: number): T {
     return this.evaluateDegree(seconds, 0)
@@ -121,6 +131,8 @@ export class Polynomial<T = number> {
    *     Polynomial.parse([3,2,1]).evaluateDegree(2, 0)  // 11 = 3 + 2*2 + 1*(2^2)
    *     Polynomial.parse([3,2,1]).evaluateDegree(2, 1)  // 6 = 2*2 + 1*(2^2)
    *     Polynomial.parse([3,2,1]).evaluateDegree(2, 2)  // 2 = 1*(2^2)
+   * 
+   * @group evaluate
    */
   evaluateDegree(seconds: number, degree: number): T {
     let p: Polynomial<T> = this
@@ -144,6 +156,8 @@ export class Polynomial<T = number> {
    *     Polynomial.parse([3,2,1]).add(Polynomial.parse([1,2,3]))  // [4,4,4]
    *     Polynomial.parse([3,2,1]).add(Polynomial.parse([5]))  // [8,2,1]
    *     Polynomial.parse([3,2,1]).add(Polynomial.zero())  // [3,2,1]
+   * 
+   * @group transforms
    */
   add(b: Polynomial<T>): Polynomial<T> {
     const coeffs = zip(this.coeffs, b.coeffs).map(([ea, eb]) => this.ops.add(ea ?? this.ops.zero, eb ?? this.ops.zero))
@@ -157,6 +171,8 @@ export class Polynomial<T = number> {
    *     Polynomial.parse([3,2,1]).add([1,2,3])  // [4,4,4]
    *     Polynomial.parse([3,2,1]).add([5])  // [8,2,1]
    *     Polynomial.parse([3,2,1]).add([])  // [3,2,1]
+   * 
+   * @group transforms
    */
   addCoeffs(b: readonly T[]): Polynomial<T> {
     // parse() is required to normalize the coefficients - don't reverse who calls who here
@@ -170,6 +186,8 @@ export class Polynomial<T = number> {
    *     Polynomial.parse([3,2,1]).sum([Polynomial.parse([1,2,3]), Polynomial.parse([1,1,1])])  // [5,5,5]
    * 
    * See also {@link sums}
+   * 
+   * @group transforms
    */
   sum(bs: readonly Polynomial<T>[]): Polynomial<T> {
     return bs.reduce((a, b) => a.add(b), this)
@@ -181,6 +199,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.sums([Polynomial.parse([1,2,3]), Polynomial.parse([1,1,1])])  // [5,5,5]
    *     Polynomial.sums([])  // throws error
+   * 
+   * @group transforms
    */
   static sums<T>(ps: readonly Polynomial<T>[]): Polynomial<T> {
     const [head, ...tail] = ps
@@ -194,6 +214,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.parse([3,2,1]).sumCoeffs([[1,2,3], [1,1,1]])  // [5,5,5]
    *     Polynomial.parse([3,2,1]).sumCoeffs([])  // [3,2,1]
+   * 
+   * @group transforms
    */
   sumCoeffs(bs: readonly (readonly T[])[]): Polynomial<T> {
     return this.sum(bs.map(b => Polynomial.parse(b, this.ops)))
@@ -205,6 +227,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.parse([3,2,1]).mul(5)  // [15,10,5]
    *     Polynomial.parse([3,2,1]).mul(0)  // [0]
+   * 
+   * @group transforms
    */
   mul(c: number): Polynomial<T> {
     const coeffs = this.coeffs.map((v) => this.ops.mul(v, c))
@@ -217,6 +241,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.parse([3,2,1]).mulT(5)  // [15,10,5]
    *     Polynomial.parse([3,2,1]).mulT(0)  // [0]
+   * 
+   * @group transforms
    */
   mulT(c: T): Polynomial<T> {
     const coeffs = this.coeffs.map((v) => this.ops.mulT(v, c))
@@ -227,6 +253,8 @@ export class Polynomial<T = number> {
    * True if the given value is a root of this polynomial - that is, if `evaluate(t) === 0` for this t.
    * 
    * @param tolerance floating point imprecision allowed for this to return true
+   * 
+   * @group roots
    */
   isRoot(t: number, tolerance = 1e-2): boolean {
     // `toNumber` is safe, roots should be very close to zero
@@ -243,6 +271,8 @@ export class Polynomial<T = number> {
    * @todo Newton's method not yet implemented - polynomials with degree >= 5 throw an error
    * 
    * https://en.wikipedia.org/wiki/Polynomial_root-finding_algorithms
+   * 
+   * @group roots
    */
   findRoots(): ReadonlySet<number> {
     const rawRoots = findRoots(this);
@@ -261,6 +291,8 @@ export class Polynomial<T = number> {
    * 
    *     Polynomial.parse([3,0,1]).format()  // [["",2],["0 ",1],["3 ",0]]
    *     Polynomial.parse([3,0,1]).toString()  // "t^2 + 0 t + 3"
+   * 
+   * @group rendering
    */
   format(): readonly (readonly [string, number])[] {
     return this.coeffs.map((c, i) => [this.ops.format(c, i), i] as [string, number]).reverse();
@@ -276,6 +308,8 @@ export class Polynomial<T = number> {
    * 
    *     Polynomial.parse([3,0,1]).formats()  // ["t^2", "0 t", "3"]
    *     Polynomial.parse([3,0,1]).toString()  // "t^2 + 0 t + 3"
+   * 
+   * @group rendering
    */
   formats(): string[] {
     return this.format().map(([c, i]) => {
@@ -298,6 +332,8 @@ export class Polynomial<T = number> {
    *     import {Polynomial} from "@erosson/polynomial"
    *     Polynomial.parse([3,2,1]).toString()  // "t^2 + 2 t + 3"
    *     Polynomial.parse([3,0,1]).toString()  // "t^2 + 0 t + 3"
+   * 
+   * @group rendering
    */
   toString(): string {
     return this.formats().join(" + ");
