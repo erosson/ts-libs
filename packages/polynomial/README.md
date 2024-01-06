@@ -1,10 +1,12 @@
+[![npm version](https://badge.fury.io/js/@erosson%2Fpolynomial.svg)](https://www.npmjs.com/package/@erosson/polynomial)
+[![cdn usage](https://data.jsdelivr.com/v1/package/npm/@erosson/polynomial/badge)](https://www.jsdelivr.com/package/npm/@erosson/polynomial)
+
 Polynomials for Typescript.
 
 ```ts
 import {Polynomial} from "@erosson/polynomial"
 
 const p = Polynomial.parse([3,2,1])
-
 p  // [3, 2, 1]
 p.toString()  // "t^2 + 2 t + 3"
 
