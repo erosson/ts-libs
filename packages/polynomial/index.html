@@ -13,13 +13,15 @@
   <div id="app"></div>
   <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script> -->
   <script type="module">
-    import * as Poly from "/src/polynomial.ts"
-    // import * as Poly from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
-    // import * as Poly from "https://esm.run/@erosson/polynomial"
+    import * as P from "/src/polynomial.ts"
+    // import * as P from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
+    // import * as P from "https://esm.run/@erosson/polynomial"
     import Decimal from "decimal.js"
-    window.Poly = Poly
+
+    window.P = P
+    window.Polynomial = P.Polynomial
     window.Decimal = Decimal
-    console.info("To try out the library in this console, use %cwindow.Poly", 'font-family: monospace; font-weight: bold;')
+    console.info("To try out the library in this console, use %cwindow.Polynomial or window.P", 'font-family: monospace; font-weight: bold;')
   </script>
 </body>
 

@@ -7,7 +7,7 @@ export default defineConfig({
         // https://vitejs.dev/guide/build.html#library-mode
         lib: {
             entry: resolve(__dirname, 'src/polynomial.ts'),
-            name: "Poly",
+            name: "Polynomial",
             // This module works both in the browser and in node.
             // Some cdns (like jsdelivr) require a `.js` extension, so node's `.cjs` and `.mjs` are no good.
             fileName(format, entryName) {
@@ -15,11 +15,6 @@ export default defineConfig({
             },
         },
         sourcemap: true,
-        rollupOptions: {
-            // allow named exports and a default export without warning me over it.
-            // default export is for common usage, named exports are advanced
-            output: { exports: "named" }
-        }
     },
     plugins: [dts()],
 })

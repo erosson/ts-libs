@@ -1,9 +1,7 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 import * as P from "./polynomial";
-import PN from "./polynomial";
 import BDecimal from "break_infinity.js";
 import ODecimal from "decimal.js";
-import { PolynomialImpl } from "./backend";
 
 type Case = { p: number[]; t: number; o: number };
 const cases: Case[] = [
@@ -23,20 +21,20 @@ const cases: Case[] = [
 
 describe("native", () => {
     test.each(cases)(`poly.calc() %s`, ({ p, t, o }) => {
-        expect(PN.evaluate(PN.parse(p), t)).toEqual(o);
+        expect(P.Polynomial.parse(p).evaluate(t)).toEqual(o);
     });
     test.each(cases)(`poly.normalize %s`, ({ p }) => {
-        expect(PN.parse(p)).toEqual(p);
-        expect(PN.parse([...p, 0])).toEqual(p);
-        expect(PN.parse([...p, 0, 0, 0, 0])).toEqual(p);
-        expect(PN.parse([...p, 0, 1, 0, 0])).toEqual([...p, 0, 1]);
+        expect(P.Polynomial.parse(p).coeffs).toEqual(p);
+        expect(P.Polynomial.parse([...p, 0]).coeffs).toEqual(p);
+        expect(P.Polynomial.parse([...p, 0, 0, 0, 0]).coeffs).toEqual(p);
+        expect(P.Polynomial.parse([...p, 0, 1, 0, 0]).coeffs).toEqual([...p, 0, 1]);
     });
     test("normalize([]) === [0]", () => {
-        expect(PN.parse([])).toEqual([0]);
+        expect(P.Polynomial.parse([]).coeffs).toEqual([0]);
     });
     test("poly.toString()", () => {
         function step(poly: number[], expected: string) {
-            expect(PN.toString(PN.parse(poly))).toBe(expected);
+            expect(P.Polynomial.parse(poly).toString()).toBe(expected);
         }
         step([0], "0");
         step([1], "1");
@@ -76,40 +74,39 @@ test('decimal types line up', () => {
     // expectTypeOf(new Decimal(0)).toMatchTypeOf<Decimal>(null as unknown as Decimal)
 })
 
-const PolyBDecimal = P.Decimal(n => new BDecimal(n))
-const PolyODecimal = P.Decimal(n => new ODecimal(n))
+const BDecimalOps = P.decimalNumberOps(n => new BDecimal(n))
+const ODecimalOps = P.decimalNumberOps(n => new ODecimal(n))
 interface DecimalCase<D extends P.IDecimal<D>> {
-    Poly: PolynomialImpl<D>
-    ctor: new (n: number) => D
+    ops: P.NumberOps<D>
+    ctor: (n: number) => D
     name: string
 }
 const decimalCases: DecimalCase<any>[] = [
-    { Poly: PolyBDecimal, ctor: BDecimal, name: 'break-infinity.js' },
-    { Poly: PolyODecimal, ctor: ODecimal, name: 'decimal.js' },
+    { ops: P.nativeNumberOps, ctor: n => n, name: 'native number' },
+    { ops: BDecimalOps, ctor: n => new BDecimal(n), name: 'break-infinity.js' },
+    { ops: ODecimalOps, ctor: n => new ODecimal(n), name: 'decimal.js' },
 ]
-describe.each(decimalCases)("decimal: %s", ({ Poly, ctor }) => {
+describe.each(decimalCases)("decimal: $name", ({ ops, ctor }) => {
     test.each(cases)(`poly.calc() %s`, ({ p: n, t, o }) => {
-        const p = n.map((c) => new ctor(c));
-        expect(Poly.evaluate(Poly.parse(p), t)).toEqual(
-            new ctor(o)
-        );
+        const p = n.map(ctor)
+        expect(P.Polynomial.parse(p, ops).evaluate(t)).toEqual(ctor(o));
     });
     test.each(cases)(`poly.normalize %s`, ({ p: n }) => {
-        const p = n.map((c) => new ctor(c));
-        expect(Poly.parse(p)).toEqual(p);
-        const zero = new ctor(0);
-        const one = new ctor(1);
-        expect(Poly.parse([...p, zero])).toEqual(p);
-        expect(Poly.parse([...p, zero, zero, zero, zero])).toEqual(p);
-        expect(Poly.parse([...p, zero, one, zero, zero])).toEqual([...p, zero, one]);
+        const p = n.map(ctor)
+        expect(P.Polynomial.parse(p, ops).coeffs).toEqual(p);
+        const zero = ctor(0);
+        const one = ctor(1);
+        expect(P.Polynomial.parse([...p, zero], ops).coeffs).toEqual(p);
+        expect(P.Polynomial.parse([...p, zero, zero, zero, zero], ops).coeffs).toEqual(p);
+        expect(P.Polynomial.parse([...p, zero, one, zero, zero], ops).coeffs).toEqual([...p, zero, one]);
     });
     test("normalize([]) === [0]", () => {
-        expect(Poly.parse([])).toEqual([new ctor(0)]);
+        expect(P.Polynomial.parse([], ops).coeffs).toEqual([ctor(0)]);
     });
     test("poly.toString()", () => {
         function step(ns: number[], expected: string) {
-            const poly = ns.map((n) => new ctor(n));
-            expect(Poly.toString(Poly.parse(poly))).toBe(expected);
+            const poly = ns.map(ctor);
+            expect(P.Polynomial.parse(poly, ops).toString()).toBe(expected);
         }
         step([0], "0");
         step([1], "1");
@@ -143,7 +140,7 @@ describe.each(decimalCases)("decimal: %s", ({ Poly, ctor }) => {
 // test('roots', () => {
 // 	function step(rp: number[], expectedN: number[]) {
 // 		const expected = expectedN.map((e) => Temporal.Duration.from({ seconds: e }));
-// 		const p = PN.parse(rp);
+// 		const p = P.Polynomial.parse(rp);
 // 		expect(P.findRoots(p)).toEqual(new Set(expected));
 // 		for (const e of expected) {
 // 			expect(P.isRoot(p, e)).toBe(true);
