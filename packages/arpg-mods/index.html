@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + TS</title>
+</head>
+
+<body>
+  <a href="/docs/index.html">docs</a>
+  <p>To try out the library in this page's Javascript console, use <code>window.ARPGMods</code></p>
+  <style>
+    table,
+    tr,
+    td {
+      border: 1px solid black;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+  </style>
+  <table>
+    <tr>
+      <th colspan="2">Local import tests (should always pass, no excuses)</th>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Modifier } from &quot;./dist/index.esm.js&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-esm"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;./dist/index.umd.js&quot;<br>
+        window.ARPGMods.Modifier<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-umd"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Modifier } from &quot;./src/index.ts&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-src"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <th colspan="2">Remote import tests (24h cdn cache, recent releases sometimes fail temporarily)</th>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script src=&quot;https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@latest&quot;&gt;&lt;/script&gt;<br>
+        &lt;script&gt;<br>
+        window.ARPGMods.Modifier<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="script-jsdelivr"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Modifier } from &quot;https://esm.run/@erosson/arpg-mods&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="esm-run"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@latest&quot;<br>
+        window.ARPGMods.Modifier<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-default"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Modifier } from &quot;https://esm.run/@erosson/arpg-mods/dist/index.esm.js&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-esm"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;https://cdn.jsdelivr.net/npm/@erosson/arpg-mods/dist/index.umd.js&quot;<br>
+        window.ARPGMods.Modifier<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="jsdelivr-umd"><i>loading...</i></td>
+    </tr>
+  </table>
+  <script>
+    function test(id, fn) {
+      let pass = '?'
+      try {
+        pass = fn() ? '<span style="color:green">pass</span>' : '<b style="color:red">FAIL</b>'
+      }
+      catch (e) {
+        console.error(id, e)
+        pass = '<b style="color:orange">ERROR</b>'
+      }
+      document.getElementById(id).innerHTML = pass
+    }
+    function libtest(id, Modifier) {
+      return test(id, () => !!Modifier)
+    }
+  </script>
+  <!-- using an exact version instead of @latest fixes cdn caches. troublesome though, I usually just wait -->
+  <script src="https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@latest"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@2.0.0"></script> -->
+  <script>
+    libtest('script-jsdelivr', window.ARPGMods.Modifier)
+  </script>
+  <script type="module">
+    import { Modifier } from "https://esm.run/@erosson/arpg-mods@latest"
+    // import { Modifier } from "https://esm.run/@erosson/arpg-mods@2.0.0"
+    libtest('esm-run', Modifier)
+  </script>
+  <script type="module">
+    import "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@latest"
+    // import "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@2.0.0"
+    libtest('jsdelivr-default', window.ARPGMods.Modifier)
+  </script>
+  <script type="module">
+    import { Modifier } from "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods/dist/index.esm.js"
+    // import { Modifier } from "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@2.0.0/dist/index.esm.js"
+    libtest('jsdelivr-esm', Modifier)
+  </script>
+  <script type="module">
+    import "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods/dist/index.umd.js"
+    // import "https://cdn.jsdelivr.net/npm/@erosson/arpg-mods@2.0.0/dist/index.umd.js"
+    libtest('jsdelivr-umd', window.ARPGMods.Modifier)
+  </script>
+  <script type="module">
+    import "/dist/index.umd.js"
+    libtest('local-umd', window.ARPGMods.Modifier)
+  </script>
+  <script type="module">
+    import { Modifier } from "/dist/index.esm.js"
+    libtest('local-esm', Modifier)
+  </script>
+  <script type="module">
+    import { Modifier } from "/src/index.ts"
+    libtest('local-src', Modifier)
+  </script>
+  <script type="module">
+    import * as ARPGMods from "/src/index.ts"
+
+    window.ARPGMods = ARPGMods
+    console.info("To try out the library in this console, use %cwindow.ARPGMods", 'font-family: monospace; font-weight: bold;')
+  </script>
+</body>
+
+</html>

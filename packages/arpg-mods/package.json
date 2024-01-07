@@ -1,0 +1,42 @@
+{
+  "name": "@erosson/arpg-mods",
+  "version": "0.0.0",
+  "packageManager": "yarn@1.22.19",
+  "type": "module",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "start": "run-pty run-pty.json",
+    "dev": "yarn docs && vite",
+    "build": "tsc --noEmit && vite build",
+    "prepack": "yarn build",
+    "test": "vitest",
+    "// docs": "# typedoc also typechecks",
+    "docs": "typedoc",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "pathofexile-dat": "^9.1.0",
+    "prettier": "^3.1.1",
+    "run-pty": "^4.1.0",
+    "semantic-release": "^22.0.12",
+    "typedoc": "^0.25.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^1.1.1"
+  }
+}
