@@ -10,10 +10,7 @@
 
 <body>
   <a href="/docs/index.html">docs</a>
-  <p>To try out the library in this page's Javascript console, use <code>window.Polynomial</code> or
-    <code>window.P</code>
-  </p>
-  <p>CDN import tests:</p>
+  <p>To try out the library in this page's Javascript console, use <code>window.PolyProd</code></p>
   <style>
     table,
     tr,
@@ -27,10 +24,42 @@
   </style>
   <table>
     <tr>
+      <th colspan="2">Local import tests (should always pass, no excuses)</th>
+    </tr>
+    <tr>
       <td style="font-family:monospace">
-        <br>
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Polynomial } from &quot;./dist/index.esm.js&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-esm"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import &quot;./dist/index.umd.js&quot;<br>
+        window.PolyProd.Polynomial<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-umd"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
+        &lt;script type=&quot;module&quot;&gt;<br>
+        import { Polynomial } from &quot;./src/index.ts&quot;<br>
+        &lt;/script&gt;<br>
+      </td>
+      <td id="local-src"><i>loading...</i></td>
+    </tr>
+    <tr>
+      <th colspan="2">Remote import tests (24h cdn cache, recent releases sometimes fail temporarily)</th>
+    </tr>
+    <tr>
+      <td style="font-family:monospace">
         &lt;script src=&quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest&quot;&gt;&lt;/script&gt;<br>
-        <br>
+        &lt;script&gt;<br>
+        window.PolyProd.Polynomial<br>
+        &lt;/script&gt;<br>
       </td>
       <td id="script-jsdelivr"><i>loading...</i></td>
     </tr>
@@ -46,7 +75,7 @@
       <td style="font-family:monospace">
         &lt;script type=&quot;module&quot;&gt;<br>
         import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest&quot;<br>
-        window.Polynomial.Polynomial<br>
+        window.PolyProd.Polynomial<br>
         &lt;/script&gt;<br>
       </td>
       <td id="jsdelivr-default"><i>loading...</i></td>
@@ -63,18 +92,10 @@
       <td style="font-family:monospace">
         &lt;script type=&quot;module&quot;&gt;<br>
         import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js&quot;<br>
-        window.Polynomial.Polynomial<br>
+        window.PolyProd.Polynomial<br>
         &lt;/script&gt;<br>
       </td>
       <td id="jsdelivr-umd"><i>loading...</i></td>
-    </tr>
-    <tr>
-      <td style="font-family:monospace">
-        &lt;script type=&quot;module&quot;&gt;<br>
-        import { Polynomial } from &quot;./src/polynomial.ts&quot;<br>
-        &lt;/script&gt;<br>
-      </td>
-      <td id="local"><i>loading...</i></td>
     </tr>
   </table>
   <script>
@@ -93,11 +114,11 @@
       return test(id, () => Polynomial.parse([3, 2, 1]).toString() === "t^2 + 2 t + 3")
     }
   </script>
-  <!-- cached, try @latest again in 24 hours. @2.0.0 works until then. (2024/01/05) -->
+  <!-- using an exact version instead of @latest fixes cdn caches. troublesome though, I usually just wait -->
   <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"></script> -->
   <script>
-    polytest('script-jsdelivr', window.Polynomial.Polynomial)
+    polytest('script-jsdelivr', window.PolyProd.Polynomial)
   </script>
   <script type="module">
     import { Polynomial } from "https://esm.run/@erosson/polynomial@latest"
@@ -107,7 +128,7 @@
   <script type="module">
     import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"
     // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0"
-    polytest('jsdelivr-default', window.Polynomial.Polynomial)
+    polytest('jsdelivr-default', window.PolyProd.Polynomial)
   </script>
   <script type="module">
     import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
@@ -117,20 +138,27 @@
   <script type="module">
     import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js"
     // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.umd.js"
-    polytest('jsdelivr-umd', window.Polynomial.Polynomial)
+    polytest('jsdelivr-umd', window.PolyProd.Polynomial)
   </script>
   <script type="module">
-    import { Polynomial } from "/src/polynomial.ts"
-    polytest('local', Polynomial)
+    import "/dist/index.umd.js"
+    polytest('local-umd', window.PolyProd.Polynomial)
   </script>
   <script type="module">
-    import * as P from "/src/polynomial.ts"
+    import { Polynomial } from "/dist/index.esm.js"
+    polytest('local-esm', Polynomial)
+  </script>
+  <script type="module">
+    import { Polynomial } from "/src/index.ts"
+    polytest('local-src', Polynomial)
+  </script>
+  <script type="module">
+    import * as PolyProd from "/src/index.ts"
     import Decimal from "decimal.js"
 
-    window.P = P
-    window.Polynomial = P.Polynomial
+    window.PolyProd = PolyProd
     window.Decimal = Decimal
-    console.info("To try out the library in this console, use %cwindow.Polynomial or window.P", 'font-family: monospace; font-weight: bold;')
+    console.info("To try out the library in this console, use %cwindow.PolyProd", 'font-family: monospace; font-weight: bold;')
   </script>
 </body>
 

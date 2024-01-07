@@ -1,7 +1,5 @@
 import { type NumberOps, nativeNumberOps } from "./number-ops";
 import { BisectOptions, findRootBisect, findRootsQuick, isRootBisectable } from "./roots";
-export { type IDecimal, decimalNumberOps } from "./number-ops"
-export { type BisectOptions, type NumberOps, nativeNumberOps }
 
 /**
  * A polynomial instance.

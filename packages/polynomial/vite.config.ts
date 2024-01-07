@@ -8,9 +8,9 @@ export default defineConfig({
         // https://vitejs.dev/guide/build.html#library-mode
         lib: {
             // @ts-expect-error rest of the project has no node dependency
-            entry: resolve(__dirname, 'src/polynomial.ts'),
+            entry: resolve(__dirname, 'src/index.ts'),
 
-            name: "Polynomial",
+            name: "PolyProd",
             // This module works both in the browser and in node.
             // Some cdns (like jsdelivr) require a `.js` extension, so node's `.cjs` and `.mjs` are no good.
             fileName(format, entryName) {
@@ -19,5 +19,5 @@ export default defineConfig({
         },
         sourcemap: true,
     },
-    plugins: [dts()],
+    plugins: [dts({ exclude: 'src/**/*.test.ts' })],
 })

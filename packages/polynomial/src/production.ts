@@ -1,5 +1,6 @@
+import { NumberOps } from "./number-ops";
 import * as G from "./graph";
-import { NumberOps, Polynomial } from "./polynomial";
+import { Polynomial } from "./polynomial";
 import { factorial } from "./util/math";
 
 export interface GetPoly<E, V, D> {

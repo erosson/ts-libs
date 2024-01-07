@@ -41,7 +41,7 @@ In the browser, pick an import style:
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@erosson/polynomial@latest"></script>
 <script>
-    // it's now at `Polynomial` or `window.Polynomial`
+    // it's now at `PolyProd` or `window.PolyProd`
 </script>
 ```
 

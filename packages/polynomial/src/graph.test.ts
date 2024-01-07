@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { type Path, allIncomingPaths, allOutgoingPaths } from "./graph";
+import { Path, allIncomingPaths, allOutgoingPaths } from "./graph";
 
 type Edge = { from: string; to: string };
 describe("graph", () => {
