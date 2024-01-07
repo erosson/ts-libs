@@ -1,5 +1,7 @@
 import { type NumberOps, nativeNumberOps } from "./number-ops";
-export { type NumberOps, nativeNumberOps, type IDecimal, decimalNumberOps } from "./number-ops"
+import { BisectOptions, findRootBisect, findRootsQuick, isRootBisectable } from "./roots";
+export { type IDecimal, decimalNumberOps } from "./number-ops"
+export { type BisectOptions, type NumberOps, nativeNumberOps }
 
 /**
  * A polynomial instance.
@@ -297,15 +299,29 @@ export class Polynomial<T = number> {
    * - is the constant term `coeffs[0]` negative?
    * - are all non-constant terms `coeffs[1..]` non-negative?
    * 
+   * That is, does it look like:
+   * 
+   *     -p0 + p1 t + p2 t^2 + p3 t^3 + ...
+   * 
    * If so, we can bisect it to approximate a root.
    * 
    * @group roots
    */
   get isRootBisectable(): boolean {
-    const nonconstantTerms = this.coeffs.slice(1)
-    return this.ops.lt(this.constantTerm, this.ops.zero)
-      && nonconstantTerms.length > 0
-      && nonconstantTerms.every(c => this.ops.gte(c, this.ops.zero))
+    return isRootBisectable(this)
+  }
+
+  /**
+   * Try to find at least one root of this polynomial - that is, the values of `t` where `evaluate(t) === 0`.
+   * 
+   * This uses bisection, which is slower than some other methods. Also, it only works for {@link isRootBisectable | bisectable polynomials}.
+   * 
+   * https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+   * 
+   * @group roots
+   */
+  findRootBisect(opts: BisectOptions = {}): number {
+    return findRootBisect(this, opts)
   }
 
   /**
@@ -374,81 +390,4 @@ function zip<T>(a: readonly T[], b: readonly T[]): readonly (readonly [T | null,
   } else {
     return b.map((el, i) => [a[i] ?? null, el])
   }
-}
-
-function findRootsQuick<T>(poly: Polynomial<T>): readonly number[] {
-  const tuple = toCoeffsTuple(poly);
-  const o = poly.ops
-  if (poly.ops.equals(poly.constantTerm, poly.ops.zero)) return [0]
-  switch (tuple.length) {
-    case 0:
-    case 1: {
-      return [];
-    }
-    case 2: {
-      // linear: x = -b/a
-      const [b, a] = tuple;
-      // return [-b / a];
-      return [o.toNumber(o.divT(o.mul(b, -1), a))];
-    }
-    case 3: {
-      // quadratic: x = [-b ± √(b2 – 4ac)]/2a
-      const [c, b, a] = tuple;
-      // const disc = b * b - 4 * a * c;
-      const disc = o.sub(o.mulT(b, b), o.mul(o.mulT(a, c), 4))
-      // const denom = 2 * a;
-      const denom = o.mul(a, 2)
-      // const sqrtDisc = Math.sqrt(disc);
-      const sqrtDisc = o.sqrt(disc)
-      // return [(-b + sqrtDisc) / denom, (-b - sqrtDisc) / denom];
-      return [
-        o.toNumber(o.divT((o.add(o.mul(b, -1), sqrtDisc)), denom)),
-        o.toNumber(o.divT((o.sub(o.mul(b, -1), sqrtDisc)), denom)),
-      ]
-    }
-    case 4: {
-      // cubic: https://math.vanderbilt.edu/schectex/courses/cubic/
-      // x = {q + [q2 + (r-p2)3]1/2}1/3   +   {q - [q2 + (r-p2)3]1/2}1/3   +   p
-      // where
-      // p = -b/(3a),   q = p3 + (bc-3ad)/(6a2),   r = c/(3a)
-      const [d, c, b, a] = tuple;
-      // const p = -b / (3 * a);
-      const p = o.divT(o.mul(b, -1), o.mul(a, 3))
-      // const q = Math.pow(p, 3) + (b * c - 3 * a * d) / (6 * Math.pow(a, 2));
-      const q = o.add(o.pow(p, 3), o.divT(o.sub(o.mulT(b, c), o.mul(o.mulT(a, d), 3)), o.mul(o.mulT(a, a), 6)))
-      // const r = c / (3 * a);
-      const r = o.divT(c, o.mul(a, 3))
-      // const disc = Math.pow(q, 2) + Math.pow(r - Math.pow(p, 2), 3);
-      const disc = o.add(o.mulT(q, q), o.pow(o.sub(r, o.mulT(p, p)), 3));
-      // const sqrtDisc = Math.sqrt(disc);
-      const sqrtDisc = o.sqrt(disc);
-      // return [p + Math.cbrt(q + sqrtDisc) + Math.cbrt(q - sqrtDisc)];
-      return [o.toNumber(o.add(o.add(p, o.cbrt(o.add(q, sqrtDisc))), o.cbrt(o.sub(q, sqrtDisc))))];
-    }
-    default: {
-      // TODO use newton's method for higher-degree polynomials
-      throw new Error(
-        `roots of polynomials of degree ${tuple.length - 1} (length ${tuple.length
-        }) not yet implemented`
-      );
-    }
-  }
-}
-
-/**
- * because the return type has better destructuring
- */
-function toCoeffsTuple<T>(
-  poly: Polynomial<T>
-):
-  | readonly [T]
-  | readonly [T, T]
-  | readonly [T, T, T]
-  | readonly [T, T, T, T]
-  | readonly T[] {
-  if (poly.coeffs[1] == null) return poly.coeffs as [T];
-  if (poly.coeffs[2] == null) return poly.coeffs as unknown as [T, T];
-  if (poly.coeffs[3] == null) return poly.coeffs as unknown as [T, T, T];
-  if (poly.coeffs[4] == null) return poly.coeffs as unknown as [T, T, T, T];
-  return poly.coeffs;
 }

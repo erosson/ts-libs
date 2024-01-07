@@ -64,7 +64,7 @@ describe("native", () => {
         step([0, -9999], "-9999 t + 0");
     });
 
-    test('roots', () => {
+    test('quick roots', () => {
         function step(rp: number[], expected: number[], bisectable = true, every = false) {
             const p = P.Polynomial.parse(rp);
             expect(p.isRootQuick).toBe(true)
@@ -90,6 +90,17 @@ describe("native", () => {
         step([], [0], false, true);
         step([-2], [], false);
     });
+    test('bisect roots', () => {
+        function step(rp: number[], expected: number) {
+            const p = P.Polynomial.parse(rp);
+            expect(p.isRootBisectable).toBe(true)
+            const result = p.findRootBisect()
+            // exact-equals won't work, this is an approximation
+            expect(result - expected).toBeCloseTo(0);
+            expect(p.isRoot(result)).toBe(true);
+        }
+        step([-512, 0, 0, 0, 2], 4)
+    })
 });
 
 test('decimal types line up', () => {
@@ -163,7 +174,7 @@ describe.each(decimalCases)("decimal: $name", ({ ops, ctor }) => {
         step([0, -9999], "-9999 t + 0");
     });
 
-    test('roots', () => {
+    test('quick roots', () => {
         function step(rp: number[], expected: number[], bisectable = true, every = false) {
             const p = P.Polynomial.parse(rp.map(ctor), ops);
             expect(p.isRootQuick).toBe(true)
@@ -189,4 +200,16 @@ describe.each(decimalCases)("decimal: $name", ({ ops, ctor }) => {
         step([], [0], false, true);
         step([-2], [], false);
     });
+    test('bisect roots', () => {
+        function step(rp: number[], expected: number) {
+            const p = P.Polynomial.parse(rp.map(ctor), ops);
+            expect(p.isRootBisectable).toBe(true)
+            const result = p.findRootBisect()
+            // exact-equals won't work, this is an approximation
+            // console.log('bisect', result, expected)
+            expect(result - expected).toBeCloseTo(0);
+            expect(p.isRoot(result)).toBe(true);
+        }
+        step([-512, 0, 0, 0, 2], 4)
+    })
 });
