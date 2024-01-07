@@ -34,6 +34,14 @@ function stepToPolynomials<V, D>(args: {
     expect(coeffs).toEqual(expected)
 }
 
+test('readme example', () => {
+    const vertices = new Map([['drone', 3], ['meat', 2]])
+    const edges = [{ from: 'drone', to: 'meat', each: 5 }]
+    const polys = simpleGraphToPolynomials(vertices, edges)
+    // the not-null-assert `!`s aren't in the readme. that's fine, looks simpler
+    polys.get('drone')!.toString()  // "3"
+    polys.get('meat')!.toString()  // "2 + 15 t"
+})
 test('pathsToPolynomials: empty', () => {
     stepToPolynomials({
         vertices: [],

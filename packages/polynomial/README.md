@@ -3,6 +3,8 @@
 
 Polynomials for Typescript. Also, implements [Swarm Simulator](https://www.swarmsim.com)-style polynomial unit production.
 
+Basic polynomials:
+
 ```ts
 import {Polynomial} from "@erosson/polynomial"
 
@@ -25,6 +27,18 @@ import Decimal from "decimal.js"
 
 const p = Polynomial.parse([new Decimal(3), new Decimal(2), new Decimal(1)], decimalNumberOps(Decimal))
 p.toString()  // "t^2 + 2 t + 3"
+```
+
+Construct polynomials from a graph of unit production, like [Swarm Simulator](https://www.swarmsim.com):
+
+```ts
+import {Production} from "@erosson/polynomial"
+
+const vertices = new Map([['drone', 3], ['meat', 2]])
+const edges = [{from: 'drone', to: 'meat', each: 5}]
+const polys = Production.simpleGraphToPolynomials(vertices, edges)
+polys.get('drone').toString()  // "3"
+polys.get('meat').toString()  // "2 + 15 t"
 ```
 
 ## Usage
