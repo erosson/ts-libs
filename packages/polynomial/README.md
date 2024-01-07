@@ -1,7 +1,7 @@
 [![npm version](https://badge.fury.io/js/@erosson%2Fpolynomial.svg)](https://www.npmjs.com/package/@erosson/polynomial)
 [![cdn usage](https://data.jsdelivr.com/v1/package/npm/@erosson/polynomial/badge)](https://www.jsdelivr.com/package/npm/@erosson/polynomial)
 
-Polynomials for Typescript.
+Polynomials for Typescript. Also, implements [Swarm Simulator](https://www.swarmsim.com)-style polynomial unit production.
 
 ```ts
 import {Polynomial} from "@erosson/polynomial"
