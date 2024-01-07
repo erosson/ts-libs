@@ -1,35 +1,41 @@
+import BDecimal from 'break_infinity.js';
+import ODecimal from 'decimal.js';
 import { expect, test } from "vitest";
-import { allIncomingPaths } from "./graph";
-import { pathsToPolynomials } from "./production";
 import { NumberOps, decimalNumberOps, nativeNumberOps } from "./number-ops";
 import { Polynomial } from "./polynomial";
-import * as MapUtil from './util/map'
+import { simpleGraphToPolynomials } from "./production";
+import * as MapUtil from './util/map';
 import { factorial } from "./util/math";
-import ODecimal from 'decimal.js'
-import BDecimal from 'break_infinity.js'
 
 function toCoeffs<K, D>(polys: ReadonlyMap<K, Polynomial<D>>): ReadonlyMap<K, readonly D[]> {
     return MapUtil.map(polys, p => p.coeffs)
 }
-function stepPathsToPolynomials<V, D>(args: {
+function stepToPolynomials<V, D>(args: {
     vertices: readonly (readonly [V, D])[],
     edges: readonly { from: V, to: V, each: D }[],
     expected: readonly (readonly [V, readonly D[]])[],
     ops: NumberOps<D>,
 }): void {
     const vertices = new Map(args.vertices)
-    const paths = allIncomingPaths(args.edges, Array.from(vertices.keys()))
-    const polys = pathsToPolynomials(args.ops, paths, {
-        each: e => e.each,
-        count: v => vertices.get(v) as unknown as D,
-    })
+    // first attempt:
+    // const paths = allIncomingPaths(args.edges, Array.from(vertices.keys()))
+    // const polys = pathsToPolynomials(args.ops, paths, {...
+    //
+    // simpler:
+    //const polys = customGraphToPolynomials(args.ops, Array.from(vertices.keys()), args.edges, {
+    //    each: e => e.each,
+    //    count: v => vertices.get(v) as unknown as D,
+    //})
+    //
+    // even simpler:
+    const polys = simpleGraphToPolynomials(vertices, args.edges, args.ops)
     const coeffs = toCoeffs(polys)
     const expected = new Map(args.expected)
     expect(coeffs).toEqual(expected)
 }
 
 test('pathsToPolynomials: empty', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [],
         edges: [],
         expected: [],
@@ -37,7 +43,7 @@ test('pathsToPolynomials: empty', () => {
     })
 })
 test('pathsToPolynomials: empty edges', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', 2], ['drone', 3]],
         edges: [],
         expected: [['drone', [3]], ['meat', [2]]],
@@ -46,7 +52,7 @@ test('pathsToPolynomials: empty edges', () => {
 })
 test('pathsToPolynomials: missing verts', () => {
     expect(() =>
-        stepPathsToPolynomials({
+        stepToPolynomials({
             vertices: [['drone', 3] /* meat is deliberately missing */],
             edges: [
                 { from: 'drone', to: 'meat', each: 5 },
@@ -57,7 +63,7 @@ test('pathsToPolynomials: missing verts', () => {
     ).toThrowError("nullish count: meat")
 })
 test('pathsToPolynomials: string keys', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', 2], ['drone', 3]],
         edges: [
             { from: 'drone', to: 'meat', each: 5 },
@@ -71,7 +77,7 @@ test('pathsToPolynomials: enum keys', () => {
         Meat,
         Drone,
     }
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [[V.Meat, 2], [V.Drone, 3]],
         edges: [
             { from: V.Drone, to: V.Meat, each: 5 },
@@ -82,7 +88,7 @@ test('pathsToPolynomials: enum keys', () => {
 })
 test('pathsToPolynomials: decimal.js values', () => {
     const ctor = (n: number) => new ODecimal(n)
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', ctor(2)], ['drone', ctor(3)]],
         edges: [
             { from: 'drone', to: 'meat', each: ctor(5) },
@@ -93,7 +99,7 @@ test('pathsToPolynomials: decimal.js values', () => {
 })
 test('pathsToPolynomials: break-infinity.js values', () => {
     const ctor = (n: number) => new BDecimal(n)
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', ctor(2)], ['drone', ctor(3)]],
         edges: [
             { from: 'drone', to: 'meat', each: ctor(5) },
@@ -103,7 +109,7 @@ test('pathsToPolynomials: break-infinity.js values', () => {
     })
 })
 test('pathsToPolynomials: parallel producers', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', 2], ['drone', 3], ['drone2', 5]],
         edges: [
             { from: 'drone', to: 'meat', each: 7 },
@@ -114,7 +120,7 @@ test('pathsToPolynomials: parallel producers', () => {
     })
 })
 test('pathsToPolynomials: producer chains', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', 2], ['drone', 3], ['queen', 5], ['nest', 7]],
         edges: [
             { from: 'drone', to: 'meat', each: 11 },
@@ -131,7 +137,7 @@ test('pathsToPolynomials: producer chains', () => {
     })
 })
 test('pathsToPolynomials: disconnected graphs', () => {
-    stepPathsToPolynomials({
+    stepToPolynomials({
         vertices: [['meat', 2], ['drone', 3], ['meat2', 5], ['drone2', 7]],
         edges: [
             { from: 'drone', to: 'meat', each: 11 },

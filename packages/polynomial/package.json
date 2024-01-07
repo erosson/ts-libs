@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "start": "run-pty run-pty.json",
-    "dev": "vite",
+    "dev": "yarn docs && vite",
     "build": "tsc --noEmit && vite build",
     "prepack": "yarn build",
     "test": "vitest",
