@@ -270,6 +270,13 @@ export class Polynomial<T = number> {
    * 
    * True if degree 3 or less, or (trivially) if the constant term is zero.
    * 
+   *     import {Polynomial} from "@erosson/polynomial"
+   *     Polynomial.parse([-3,2,1]).isRootQuick  // true
+   *     Polynomial.parse([-64,0,0,1]).isRootQuick  // true
+   *     Polynomial.parse([-5,4,3,2,1]).isRootQuick  // false
+   *     Polynomial.parse([0]).isRootQuick  // true
+   *     Polynomial.parse([1]).isRootQuick  // true
+   * 
    * @group roots
    */
   get isRootQuick(): boolean {
@@ -284,6 +291,13 @@ export class Polynomial<T = number> {
    * @todo polynomials with degree >= 4 not yet implemented, throw an error
    * 
    * https://en.wikipedia.org/wiki/Polynomial_root-finding_algorithms
+   * 
+   *     import {Polynomial} from "@erosson/polynomial"
+   *     Polynomial.parse([-3,2,1]).findRootsQuick()  // Set([1,-3])
+   *     Polynomial.parse([-64,0,0,1]).findRootsQuick()  // Set([4])
+   *     Polynomial.parse([-5,4,3,2,1]).findRootsQuick()  // throws Error - degree too high; isRootQuick was false
+   *     Polynomial.parse([0]).findRootsQuick()  // Set([0])
+   *     Polynomial.parse([1]).findRootsQuick()  // Set([])
    * 
    * @group roots
    */
@@ -305,6 +319,13 @@ export class Polynomial<T = number> {
    * 
    * If so, we can bisect it to approximate a root.
    * 
+   *     import {Polynomial} from "@erosson/polynomial"
+   *     Polynomial.parse([-3,2,1]).isRootBisectable  // true
+   *     Polynomial.parse([-64,0,0,1]).isRootBisectable  // true
+   *     Polynomial.parse([-5,4,3,2,1]).isRootBisectable  // false
+   *     Polynomial.parse([0]).isRootBisectable  // false
+   *     Polynomial.parse([1]).isRootBisectable  // false
+   * 
    * @group roots
    */
   get isRootBisectable(): boolean {
@@ -312,11 +333,21 @@ export class Polynomial<T = number> {
   }
 
   /**
-   * Try to find at least one root of this polynomial - that is, the values of `t` where `evaluate(t) === 0`.
+   * Try to approximate exactly one root of this polynomial - that is, the values of `t` where `evaluate(t) === 0`.
    * 
-   * This uses bisection, which is slower than some other methods. Also, it only works for {@link isRootBisectable | bisectable polynomials}.
+   * This uses bisection, which is slower than some other methods. Also, it only works for {@link isRootBisectable | bisectable polynomials}. Also, it's an approximation, not an exact result.
+   * 
+   * You should prefer {@link findRootsQuick} when possible.
    * 
    * https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+   * 
+   *     import {Polynomial} from "@erosson/polynomial"
+   *     Polynomial.parse([-3,2,1]).findRootBisect()  // 0.999999...
+   *     Polynomial.parse([-64,0,0,1]).findRootBisect()  // 3.99999...
+   *     Polynomial.parse([-256,0,0,0,1]).findRootBisect()  // 3.99999...
+   *     Polynomial.parse([0]).findRootBisect()  // error: not bisectable
+   *     Polynomial.parse([1]).isRootBisectable  // error: not bisectable
+   *     Polynomial.parse([-1]).isRootBisectable  // error: not bisectable
    * 
    * @group roots
    */
