@@ -422,3 +422,5 @@ function zip<T>(a: readonly T[], b: readonly T[]): readonly (readonly [T | null,
     return b.map((el, i) => [a[i] ?? null, el])
   }
 }
+
+// const x: number = '3'

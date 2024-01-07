@@ -1,0 +1,32 @@
+[
+  {
+    "command": ["yarn", "run", "dev"],
+    "title": "http://localhost:5173 - web server",
+    "status": {
+      "Internal server error: /": ["🚨", "E"],
+      "\\[vite\\] page reload ": null,
+      "  ➜  Local:   http": null
+    },
+    "defaultStatus": ["⏳", "S"]
+  },
+  {
+    "command": ["yarn", "run", "test"],
+    "title": "unit tests",
+    "status": {
+      " RERUN  ": ["⏳", "S"],
+      " FAIL  Tests failed. Watching for file changes...": ["🚨", "E"],
+      " PASS  Waiting for file changes...": null
+    },
+    "defaultStatus": ["⏳", "S"]
+  },
+  {
+    "command": ["yarn", "run", "docs", "--watch"],
+    "title": "type check/docs build",
+    "status": {
+      "File change detected. Starting incremental compilation...": ["⏳", "S"],
+      "Found \\d+ errors. Watching for file changes.": ["🚨", "E"],
+      "Found 0 errors. Watching for file changes.": null
+    },
+    "defaultStatus": ["⏳", "S"]
+  }
+]

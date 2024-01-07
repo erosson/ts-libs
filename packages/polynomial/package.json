@@ -18,10 +18,12 @@
     "/dist"
   ],
   "scripts": {
-    "dev": "yarn docs && vite",
-    "build": "tsc && vite build",
+    "start": "run-pty run-pty.json",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
     "prepack": "yarn build",
     "test": "vitest",
+    "// docs": "# typedoc also typechecks",
     "docs": "typedoc",
     "preview": "vite preview"
   },
