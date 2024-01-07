@@ -10,7 +10,7 @@ export default defineConfig({
             // @ts-expect-error rest of the project has no node dependency
             entry: resolve(__dirname, 'src/index.ts'),
 
-            name: "PolyProd",
+            name: "Polynomial",
             // This module works both in the browser and in node.
             // Some cdns (like jsdelivr) require a `.js` extension, so node's `.cjs` and `.mjs` are no good.
             fileName(format, entryName) {
