@@ -22,14 +22,17 @@ p.evaluate(2)  // 11
 Other number formats are supported, like [Decimal.js](https://mikemcl.github.io/decimal.js/):
 
 ```ts
-import {Polynomial, decimalNumberOps} from "@erosson/polynomial"
+import {Polynomial, decimalNumberOps, nativeNumberOps} from "@erosson/polynomial"
 import Decimal from "decimal.js"
 
-const p = Polynomial.parse([new Decimal(3), new Decimal(2), new Decimal(1)], decimalNumberOps(Decimal))
-p.toString()  // "t^2 + 2 t + 3"
+const p1 = Polynomial.parse([3, 2, 1], nativeNumberOps)
+p1.toString()  // "t^2 + 2 t + 3"
+
+const p2 = Polynomial.parse([new Decimal(3), new Decimal(2), new Decimal(1)], decimalNumberOps(Decimal))
+p2.toString()  // "t^2 + 2 t + 3"
 ```
 
-Construct polynomials from a graph of unit production, like [Swarm Simulator](https://www.swarmsim.com):
+Construct polynomials describing a unit production graph, like [Swarm Simulator](https://www.swarmsim.com):
 
 ```ts
 import {Production} from "@erosson/polynomial"
