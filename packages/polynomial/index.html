@@ -83,7 +83,7 @@
     <tr>
       <td style="font-family:monospace">
         &lt;script type=&quot;module&quot;&gt;<br>
-        import { Polynomial } from &quot;https://esm.run/@erosson/polynomial/dist/polynomial.esm.js&quot;<br>
+        import { Polynomial } from &quot;https://esm.run/@erosson/polynomial/dist/index.esm.js&quot;<br>
         &lt;/script&gt;<br>
       </td>
       <td id="jsdelivr-esm"><i>loading...</i></td>
@@ -91,7 +91,7 @@
     <tr>
       <td style="font-family:monospace">
         &lt;script type=&quot;module&quot;&gt;<br>
-        import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js&quot;<br>
+        import &quot;https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/index.umd.js&quot;<br>
         window.Polynomial.Polynomial<br>
         &lt;/script&gt;<br>
       </td>
@@ -131,13 +131,13 @@
     polytest('jsdelivr-default', window.Polynomial.Polynomial)
   </script>
   <script type="module">
-    import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.esm.js"
-    // import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.esm.js"
+    import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/index.esm.js"
+    // import { Polynomial } from "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/index.esm.js"
     polytest('jsdelivr-esm', Polynomial)
   </script>
   <script type="module">
-    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/polynomial.umd.js"
-    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/polynomial.umd.js"
+    import "https://cdn.jsdelivr.net/npm/@erosson/polynomial/dist/index.umd.js"
+    // import "https://cdn.jsdelivr.net/npm/@erosson/polynomial@2.0.0/dist/index.umd.js"
     polytest('jsdelivr-umd', window.Polynomial.Polynomial)
   </script>
   <script type="module">
