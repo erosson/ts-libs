@@ -68,3 +68,9 @@ export function groupBy<K, V>(values: readonly V[], fnK: (v: V) => K): ReadonlyM
 export function tagBy<K, V>(values: readonly V[], fnKs: (v: V) => Iterable<K>): ReadonlyMap<K, readonly V[]> {
     return groupEntries(values.flatMap((v) => Array.from(fnKs(v)).map((k) => [k, v] as [K, V])));
 }
+
+export function map<K, V1, V2>(m: Map<K, V1>, fn: (v: V1, k: K) => V2): Map<K, V2>
+export function map<K, V1, V2>(m: ReadonlyMap<K, V1>, fn: (v: V1, k: K) => V2): ReadonlyMap<K, V2>
+export function map<K, V1, V2>(m: ReadonlyMap<K, V1>, fn: (v: V1, k: K) => V2): ReadonlyMap<K, V2> {
+    return new Map(Array.from(m.entries()).map(([k, v]) => [k, fn(v, k)]));
+}
