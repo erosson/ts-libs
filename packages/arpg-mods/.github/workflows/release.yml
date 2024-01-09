@@ -1,8 +1,8 @@
 # https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/ci-configurations/github-actions.md
 name: Release
 on:
-  push:
-    branches: [main, beta]
+  #push:
+  #  branches: [main, beta]
 
 permissions:
   contents: read
