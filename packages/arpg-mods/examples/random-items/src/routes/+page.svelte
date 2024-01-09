@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AffixClass, AffixFamily } from '../../../../src/affix';
-	import { ModFamily, ModFamilyId, toArpgMods } from '../../../../src/reader-poe';
+	import { toArpgMods } from '../../../../src/reader-poe';
 	import * as MU from '../../../../src/util/map';
 	const { data } = $props<{ data: { mods: ReturnType<typeof toArpgMods> } }>();
 	const { mods } = data;
@@ -8,19 +8,17 @@
 
 	let search = $state('');
 
-	const subjects = Array.from(new Set(mods.flatMap((m) => m.weight.map((w) => w.subject))));
-	const selectedSubjectsOrd = $state(subjects.map((s) => false));
-	const selectedSubjects = $derived(
-		new Set(selectedSubjectsOrd.flatMap((val, i) => (val ? [subjects[i]] : [])))
+	const subjects = $state(
+		Object.fromEntries(mods.flatMap((m) => m.weight.map((w) => [w.subject, false])))
 	);
+	const numSubjects = $derived(Object.values(subjects).filter((s) => !!s).length);
 
-	const stats = Array.from(new Set(mods.flatMap((m) => m.stats.map((s) => s.statId))));
-	const selectedStatsOrd = $state(stats.map((s) => false));
-	const selectedStats = $derived(
-		new Set(selectedStatsOrd.flatMap((val, i) => (val ? [stats[i]] : [])))
+	const stats = $state(
+		Object.fromEntries(mods.flatMap((m) => m.stats.map((s) => [s.statId, false])))
 	);
+	const numStats = $derived(Object.values(stats).filter((s) => !!s).length);
 
-	let families = $state(Object.fromEntries(mods.map((m) => [familiesSlug(m.families), false])));
+	const families = $state(Object.fromEntries(mods.map((m) => [familiesSlug(m.families), false])));
 
 	const visibleMods = $derived(mods.filter(isMatch));
 	const visibleModsByFamily = $derived(MU.groupBy(visibleMods, (m) => familiesSlug(m.families)));
@@ -33,10 +31,8 @@
 			mod.families.some((f) => re.test(f)) ||
 			mod.weight.some((w) => re.test(w.subject)) ||
 			mod.stats.some((s) => re.test(s.statId));
-		const matchSubj =
-			selectedSubjects.size === 0 || mod.weight.some((w) => selectedSubjects.has(w.subject));
-		const matchStats =
-			selectedStats.size === 0 || mod.stats.some((s) => selectedStats.has(s.statId));
+		const matchSubj = numSubjects === 0 || mod.weight.some((w) => subjects[w.subject]);
+		const matchStats = numStats === 0 || mod.stats.some((s) => stats[s.statId]);
 		return matchSubj && matchStats && matchRe;
 	}
 	function familiesSlug(fs: readonly AffixFamily[]): string {
@@ -54,19 +50,19 @@
 {/if}
 
 <details open>
-	<summary>{format.format(subjects.length)} spawn subjects</summary>
-	{#each subjects as subj, i}
+	<summary>{format.format(numSubjects)} spawn subjects</summary>
+	{#each Object.keys(subjects) as subj}
 		<label>
-			<input type="checkbox" value={subj} bind:checked={selectedSubjectsOrd[i]} />{subj}
+			<input type="checkbox" value={subj} bind:checked={subjects[subj]} />{subj}
 		</label>
 	{/each}
 </details>
 
 <details open={false}>
-	<summary>{format.format(stats.length)} stats</summary>
-	{#each stats as stat, i}
+	<summary>{format.format(Object.keys(stats).length)} stats</summary>
+	{#each Object.keys(stats) as stat}
 		<label>
-			<input type="checkbox" value={stat} bind:checked={selectedStatsOrd[i]} />{stat}
+			<input type="checkbox" value={stat} bind:checked={stats[stat]} />{stat}
 		</label>
 	{/each}
 </details>
@@ -119,7 +115,6 @@
 					<td
 						on:click={() => {
 							families[key] = !families[key];
-							families = families;
 						}}
 					>
 						<input type="checkbox" readonly={true} checked={families[key]} />
