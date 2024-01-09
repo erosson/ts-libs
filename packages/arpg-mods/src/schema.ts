@@ -26,7 +26,7 @@ export interface StatModifier {
  */
 export interface AffixClass {
     readonly affixId: string
-    readonly slot: "prefix" | "suffix" | "implicit" | "enchant" // others?
+    readonly slot: "prefix" | "suffix" // | "implicit" | "enchant" // others?
     readonly level: number
     // what kind of stat is this? things like harvest roll only a particular kind of stat, like "life" or "speed"
     readonly tags: ReadonlySet<string>
