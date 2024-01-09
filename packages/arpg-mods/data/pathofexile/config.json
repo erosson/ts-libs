@@ -1,0 +1,67 @@
+{
+    "// docs": "# https://github.com/SnosMe/poe-dat-viewer/tree/master/lib",
+    "patch": "3.23.0.3",
+    "files": [
+        "Metadata/StatDescriptions/stat_descriptions.txt"
+    ],
+    "translations": [
+        "English"
+    ],
+    "tables": [
+        {
+            "name": "Stats",
+            "columns": [
+                "Id",
+                "Text"
+            ]
+        },
+        {
+            "name": "ModFamily",
+            "columns": [
+                "Id"
+            ]
+        },
+        {
+            "name": "ModType",
+            "columns": [
+                "Name"
+            ]
+        },
+        {
+            "name": "Tags",
+            "columns": [
+                "Id"
+            ]
+        },
+        {
+            "name": "Mods",
+            "columns": [
+                "Id",
+                "ModTypeKey",
+                "Level",
+                "StatsKey1",
+                "StatsKey2",
+                "StatsKey3",
+                "StatsKey4",
+                "StatsKey5",
+                "StatsKey6",
+                "Name",
+                "Families",
+                "Stat1Min",
+                "Stat1Max",
+                "Stat2Min",
+                "Stat2Max",
+                "Stat3Min",
+                "Stat3Max",
+                "Stat4Min",
+                "Stat4Max",
+                "Stat5Min",
+                "Stat5Max",
+                "Stat6Min",
+                "Stat6Max",
+                "SpawnWeight_TagsKeys",
+                "SpawnWeight_Values"
+            ]
+        }
+    ]
+}
