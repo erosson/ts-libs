@@ -95,7 +95,7 @@ export function toArpgMods(dat: D2dat): readonly A2.AffixClass[] {
 
         if (!mod.level) return null
         return {
-            affixId: A2.AffixId.parse(`${mod.id}`),
+            affixId: A2.AffixId.parse(`${mod.id}:${mod.Name}`),
             level: mod.level,
             maxLevel: 0,
             families: [A2.AffixFamily.parse(`${mod.group}`)],
