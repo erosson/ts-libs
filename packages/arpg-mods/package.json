@@ -25,6 +25,7 @@
     "prepack": "yarn build",
     "test": "vitest",
     "pretest": "[ -d data/pathofexile/dist ] || ./data/pathofexile/poeget.sh ",
+    "predev": "[ -d data/pathofexile/dist ] || ./data/pathofexile/poeget.sh ",
     "// docs": "# typedoc also typechecks",
     "docs": "typedoc",
     "preview": "vite preview"

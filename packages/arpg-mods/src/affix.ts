@@ -86,6 +86,7 @@ export const AffixClass = z.object({
     // TODO: implement the basics before adding these
     // slot: z.enum(['prefix', 'suffix']).optional(),
     level: z.number().nonnegative(),
+    maxLevel: z.number().nonnegative(),
     // tags: z.array(AffixTag),
     families: z.array(AffixFamily),
     weight: z.array(AffixWeight),

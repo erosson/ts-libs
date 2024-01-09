@@ -46,6 +46,7 @@ export const Mod = z.object({
     Id: ModId,
     ModTypeKey: z.number(),
     Level: z.number(),
+    MaxLevel: z.number(),
     Name: z.string(),
     Families: z.array(z.number()),
     StatsKey1: z.number().nullable(),
@@ -120,6 +121,7 @@ export function toArpgMods(dat: Poedat): readonly A2.AffixClass[] {
             affixId: A2.AffixId.parse(mod.Id),
             families,
             level: mod.Level,
+            maxLevel: mod.MaxLevel,
             stats,
             weight,
         }

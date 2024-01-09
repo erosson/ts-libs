@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { readFiles, toArpgMods } from "./reader-poe";
+import { readFiles, toArpgMods } from "./reader-pathofexile";
 import path from "path";
 
 test('read', async () => {

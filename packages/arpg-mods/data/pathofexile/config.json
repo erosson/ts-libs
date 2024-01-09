@@ -39,6 +39,7 @@
                 "Id",
                 "ModTypeKey",
                 "Level",
+                "MaxLevel",
                 "StatsKey1",
                 "StatsKey2",
                 "StatsKey3",
