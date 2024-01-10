@@ -1,7 +1,7 @@
 import { z } from "zod"
 import fs from 'fs/promises'
 import path from "path"
-import * as A2 from "./affix"
+import * as A2 from "./affix-class"
 import * as MU from './util/map'
 import { zip } from "./util/array"
 

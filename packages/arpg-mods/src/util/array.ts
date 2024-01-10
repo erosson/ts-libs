@@ -15,3 +15,9 @@ export function zip<A, B>(a: readonly A[], b: readonly B[]): readonly (readonly 
         return b.map((el, i) => [a[i] ?? null, el])
     }
 }
+export function unzip<A, B>(ab: readonly (readonly [A, B])[]): readonly [readonly A[], readonly B[]] {
+    return [
+        ab.map(([a, _]) => a),
+        ab.map(([_, b]) => b),
+    ]
+}

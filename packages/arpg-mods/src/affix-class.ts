@@ -5,11 +5,6 @@ import { z } from "zod";
 // - XInstance: one of the things, currently in memory
 // - XPersist: one of the things, written to disk
 
-// TODO: damage ranges - "adds 1 - 100 damage".
-// this is two stats, not one. but they're displayed as a single stat!
-// confirmed it's two stats, poe rolls min/max separately. you can have a high min, low max, or low min, high max. https://www.craftofexile.com/ > emulator
-// but it's distinct from things like hybrid phys, or betrayal mods - two stats displayed as two stats.
-
 export const StatId = z.string().min(1).brand('StatId')
 export type StatId = z.infer<typeof StatId>;
 export const StatGroupId = z.string().min(1).brand('StatGroupId')

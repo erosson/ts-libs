@@ -1,9 +1,6 @@
-import { expect, test } from "vitest";
-import { readFiles, toArpgMods } from "./reader-diablo2";
-import path from "path";
+import { expect } from "vitest";
+import { test2 } from "./test2";
 
-test('read', async () => {
-    const dat = await readFiles(path.join(__dirname, '../data/diablo2/dist'))
-    const mods = toArpgMods(dat)
+test2('read', ({ diablo2: mods }) => {
     expect(mods.length).toBeGreaterThan(1000)
 })
