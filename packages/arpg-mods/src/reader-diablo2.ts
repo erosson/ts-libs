@@ -2,7 +2,6 @@ import fs from 'fs/promises'
 import path from "path"
 import { z } from "zod"
 import * as A2 from "./affix-class"
-import { zip } from './util/array'
 
 export const AffixId = z.string().transform(s => parseInt(s))
 export type AffixId = z.infer<typeof AffixId>

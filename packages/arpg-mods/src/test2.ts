@@ -4,6 +4,9 @@ import * as PathOfExile from './reader-pathofexile'
 import path from "path"
 import { AffixClass } from "./affix-class"
 
+/**
+ * Automated test fixtures.
+ */
 export interface Test2 {
     readonly diablo2: readonly AffixClass[]
     readonly pathofexile: readonly AffixClass[]
