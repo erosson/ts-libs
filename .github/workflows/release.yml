@@ -1,0 +1,26 @@
+# based on https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/ci-configurations/github-actions.md
+name: Release - test, git tag, npm packages
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: devcontainers/ci@v0.3
+        with:
+          # this is a dry-run, no --execute yet!
+          runCmd: yarn release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

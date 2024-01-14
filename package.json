@@ -1,0 +1,13 @@
+{
+  "name": "@erosson/ts-libs",
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "author": "Evan Rosson <git@erosson.org>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "release": "yarn workflow run release"
+  }
+}

@@ -1,0 +1,3 @@
+[submodule "packages/semver-incr/semver-incr-git"]
+	path = packages/semver-incr/semver-incr-git
+	url = git@github.com:erosson/semver-incr-git.git

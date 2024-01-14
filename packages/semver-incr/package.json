@@ -1,0 +1,23 @@
+{
+  "name": "@erosson/semver-incr",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erosson/ts-libs.git",
+    "directory": "packages/semver-incr"
+  },
+  "license": "MIT",
+  "files": [
+    "bin",
+    "semver-incr-git/bin"
+  ],
+  "bin": {
+    "semver-incr-npm": "bin/semver-incr-npm",
+    "semver-incr-git": "semver-incr-git/bin/semver-incr-git"
+  },
+  "scripts": {
+    "release": "semver-incr-npm",
+    "test": "true"
+  }
+}
