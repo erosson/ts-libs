@@ -8,6 +8,6 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "release": "yarn workflow run release"
+    "release": "yarn workspaces run release"
   }
 }
