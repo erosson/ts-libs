@@ -71,18 +71,22 @@ jobs:
 
   docs-build:
     runs-on: ubuntu-latest
-    needs: docker-build
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
       - uses: actions/configure-pages@v4
-      - uses: devcontainers/ci@v0.3
+      # Skip the devcontainer, for speed. Seems to work so far!
+      - uses: actions/setup-node@v3
         with:
-          cacheFrom: ghcr.io/${{ github.repository }}
-          push: never
-          runCmd: yarn release-docs
+          node-version: "lts/*"
+      - run: yarn release-docs
+      #- uses: devcontainers/ci@v0.3
+      #  with:
+      #    cacheFrom: ghcr.io/${{ github.repository }}
+      #    push: never
+      #    runCmd: yarn release-docs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/docs
