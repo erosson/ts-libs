@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: yarn release --execute
