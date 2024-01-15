@@ -33,6 +33,4 @@ jobs:
           submodules: true
       - uses: devcontainers/ci@v0.3
         with:
-          runCmd: yarn --cwd ${{ matrix.package-path }} test
-        env:
-          CI: ${{ env.CI }}
+          runCmd: CI=1 yarn --cwd ${{ matrix.package-path }} test
