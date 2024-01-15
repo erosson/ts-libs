@@ -1,6 +1,7 @@
 {
   "name": "@erosson/polynomial",
   "version": "0.0.0",
+  "license": "MIT",
   "packageManager": "yarn@1.22.19",
   "type": "module",
   "main": "./dist/index.umd.js",
