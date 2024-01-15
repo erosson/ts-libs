@@ -73,9 +73,7 @@ jobs:
         with:
           # cacheFrom: ghcr.io/${{ github.repository }}
           # push: never
-          runCmd: yarn --cwd ${{ matrix.package-path }} test
-        env:
-          CI: ${{ env.CI }}
+          runCmd: CI=1 yarn --cwd ${{ matrix.package-path }} test
 
       ## release needs NPM auth, test doesn't.
       ## normally the setup-node action configures auth, but it doesn't work well with the devcontainer github-action
@@ -95,7 +93,6 @@ jobs:
           # push: never
           runCmd: yarn --cwd ${{ matrix.package-path }} release --execute
         env:
-          CI: ${{ env.CI }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -168,6 +165,5 @@ jobs:
   #        # push: never
   #        runCmd: yarn --cwd ${{ matrix.package-path }} release --execute
   #      env:
-  #        CI: ${{ env.CI }}
   #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
