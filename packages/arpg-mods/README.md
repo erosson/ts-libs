@@ -40,3 +40,4 @@ import {Modifier} from "@erosson/arpg-mods"
 ```ts
 const {Modifier} = require("@erosson/arpg-mods");
 ```
+
