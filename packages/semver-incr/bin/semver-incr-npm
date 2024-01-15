@@ -108,9 +108,9 @@ if [ "$VERSION" != "" ]; then
     NPM_PUBLISH_ARGS=()
     [[ $EXECUTE -eq 1 ]] || NPM_PUBLISH_ARGS+=("--dry-run")
     # This doesn't seem to actually work with a mostly-yarn package...?
-    #npm publish "${NPM_PUBLISH_ARGS[@]}"
+    npm publish "${NPM_PUBLISH_ARGS[@]}"
     # yarn publish has no dry-run flag, sadly
-    [[ $EXECUTE -eq 1 ]] && yarn publish
+    # [[ $EXECUTE -eq 1 ]] && yarn publish
 
     # npm version "$PACKAGE_VERSION" --no-git-tag-version
     # npm version "0.0.0" --no-git-tag-version

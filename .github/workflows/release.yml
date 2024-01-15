@@ -19,17 +19,18 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      # we don't actually need node because we use a devcontainer below, but this gets npm auth/.npmrc working. 
-      # https://github.com/npm/cli/issues/6184
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-          registry-url: "https://registry.npmjs.org"
-          always-auth: true
+      ## we don't actually need node because we use a devcontainer below, but this gets npm auth/.npmrc working. 
+      ## https://github.com/npm/cli/issues/6184
+      #- name: Setup Node.js
+      #  uses: actions/setup-node@v3
+      #  with:
+      #    node-version: "lts/*"
+      #    registry-url: "https://registry.npmjs.org"
+      #    always-auth: true
+      - run: echo '//registry.yarnpkg.com/:_authToken=${NPM_TOKEN}' > .npmrc
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: yarn release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
