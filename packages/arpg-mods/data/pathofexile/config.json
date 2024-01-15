@@ -1,9 +1,7 @@
 {
     "// docs": "# https://github.com/SnosMe/poe-dat-viewer/tree/master/lib",
-    "patch": "3.23.0.3",
-    "files": [
-        "Metadata/StatDescriptions/stat_descriptions.txt"
-    ],
+    "// patch - replace with latest version, from:": "https://raw.githubusercontent.com/poe-tool-dev/latest-patch-version/main/latest.txt",
+    "patch": "3.23.0.4",
     "translations": [
         "English"
     ],

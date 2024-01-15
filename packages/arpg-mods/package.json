@@ -1,6 +1,12 @@
 {
   "name": "@erosson/arpg-mods",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erosson/ts-libs.git",
+    "directory": "packages/polynomial"
+  },
+  "license": "MIT",
   "packageManager": "yarn@1.22.19",
   "type": "module",
   "main": "./dist/index.umd.js",
@@ -24,10 +30,13 @@
     "build": "tsc --noEmit && vite build",
     "prepack": "yarn build",
     "test": "vitest",
-    "pretest": "[ -d data/pathofexile/dist ] || ./data/pathofexile/poeget.sh ",
-    "predev": "[ -d data/pathofexile/dist ] || ./data/pathofexile/poeget.sh ",
+    "data": "./data/clean.sh && ./data/get.sh ",
+    "pretest": "./data/get.sh ",
+    "predev": "./data/get.sh ",
     "// docs": "# typedoc also typechecks",
     "docs": "typedoc",
+    "release": "true",
+    "release-docs": "true",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -36,7 +45,7 @@
     "pathofexile-dat": "^9.1.0",
     "prettier": "^3.1.1",
     "run-pty": "^4.1.0",
-    "semantic-release": "^22.0.12",
+    "semver-incr": "link:../semver-incr/",
     "typedoc": "^0.25.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
