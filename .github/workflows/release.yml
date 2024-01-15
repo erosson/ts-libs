@@ -19,8 +19,7 @@ jobs:
           fetch-depth: 0
       - uses: devcontainers/ci@v0.3
         with:
-          runCmd: yarn release
+          runCmd: yarn release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # no real releases yet, everyone's still dry-running, so no need for this yet
-          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

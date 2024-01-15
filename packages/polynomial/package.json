@@ -26,6 +26,8 @@
     "test": "vitest",
     "// docs": "# typedoc also typechecks",
     "docs": "typedoc",
+    "release": "yarn test --run && yarn build && yarn _release",
+    "_release": "semver-incr-npm",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -34,7 +36,7 @@
     "decimal.js": "^10.4.3",
     "prettier": "^3.1.1",
     "run-pty": "^4.1.0",
-    "semantic-release": "^22.0.12",
+    "semver-incr": "link:../semver-incr/",
     "typedoc": "^0.25.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
