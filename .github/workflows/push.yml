@@ -1,4 +1,4 @@
-name: On push - test, release, release-docs
+name: Push
 
 on:
   push:
