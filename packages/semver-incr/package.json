@@ -18,7 +18,10 @@
   },
   "scripts": {
     "release-docs": "true",
+    "_submodule-check": "bash -c 'which semver-incr-git || (echo \"Git submodules not present. run: git submodule update --init\") '",
+    "prerelease": "yarn _submodule-check",
     "release": "semver-incr-npm",
+    "pretest": "yarn _submodule-check",
     "test": "bats test"
   }
 }
