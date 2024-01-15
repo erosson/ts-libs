@@ -107,6 +107,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
+      - run: yarn install --frozen-lockfile
       - run: yarn release-docs
       #- uses: devcontainers/ci@v0.3
       #  with:
