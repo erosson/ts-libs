@@ -1,6 +1,11 @@
 {
   "name": "@erosson/polynomial",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erosson/ts-libs.git",
+    "directory": "packages/polynomial"
+  },
   "license": "MIT",
   "packageManager": "yarn@1.22.19",
   "type": "module",
