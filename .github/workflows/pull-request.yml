@@ -1,0 +1,17 @@
+name: On PR - test
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: devcontainers/ci@v0.3
+        with:
+          runCmd: yarn test
