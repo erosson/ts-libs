@@ -20,16 +20,19 @@ jobs:
     outputs:
       packages: ${{ steps.filter.outputs.changes }}
     steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          polynomial:
-            - 'packages/polynomial/**'
-            - '.github/workflows/**'
-          semver-incr:
-            - 'packages/semver-incr/**'
-            - '.github/workflows/**'
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            polynomial:
+              - 'packages/polynomial/**'
+              - '.github/workflows/**'
+            semver-incr:
+              - 'packages/semver-incr/**'
+              - '.github/workflows/**'
 
   docker-build:
     # https://github.com/devcontainers/ci/blob/main/docs/github-action.md
