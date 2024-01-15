@@ -26,10 +26,9 @@ jobs:
         with:
           node-version: "lts/*"
           registry-url: "https://registry.npmjs.org"
-      - run: cat .npmrc
       - uses: devcontainers/ci@v0.3
         with:
-          runCmd: env && yarn release --execute
+          runCmd: yarn release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
