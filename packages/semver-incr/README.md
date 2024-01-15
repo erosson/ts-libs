@@ -35,4 +35,4 @@ You can specify a path, or `cd` to a path. Only commits from that path are analy
 ```bash
 $ semver-incr-git --path ./packages/my-package #[--execute]
 @company/my-package/v1.2.3
-```bash
+```
