@@ -18,6 +18,6 @@
   },
   "scripts": {
     "release": "semver-incr-npm",
-    "test": "true"
+    "test": "bats test"
   }
 }

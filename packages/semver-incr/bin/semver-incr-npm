@@ -2,6 +2,7 @@
 # which semver-incr-git
 set -eu
 
+# TODO we always use yarn - allow npm instead. not a flag, but look for yarn.lock or package-lock.json. not just one file check, need to check up the tree for monorepos.
 BIN="`dirname "$(readlink -f "$0")"`"
 EXE="`basename $0`"
 PACKAGE_PATH="."
@@ -15,13 +16,13 @@ help() {
     cat <<EOF >&2
 Suggest a next semver based on your project's git commit messages. Optionally, release an NPM package and push a git tag with the suggested semver. Designed for CI.
 
-Usage: $EXE [--path PACKAGE_PATH] [--execute]
+Usage: $EXE [--path PACKAGE_DIR] [--execute]
 
     -h, --help             show this help message and exit
     -v, --verbose          show detailed output
     --prefix PREFIX        text before all git tags. Useful for monorepos. Default: "<PACKAGE_NAME>/v"
     --suffix SUFFIX        text after all git tags. Default: ""
-    --path PATH            show only commits that affect PATH. Useful for monorepos. Default: "."
+    --path PACKAGE_DIR     show only commits that affect this directory. Useful for monorepos. Default: "."
     --push-remote REMOTE   push tags to this git origin, as in "git push REMOTE NEW_TAG". If empty, pushing is skipped. Default: "origin"
     --execute              git-commit and git-push the suggested tag. Use this for CI.
 EOF
@@ -29,7 +30,7 @@ EOF
 fail() {
     echo "$@" >&2
     echo >&2
-    help
+    exit 1
 }
 logv() {
     [ $VERBOSE -eq 1 ] && echo "$@" >&2 || true
@@ -73,13 +74,17 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-PACKAGE_NAME="`jq -r ".name" "$PACKAGE_PATH/package.json"`"
-PACKAGE_VERSION="`jq -r ".version" "$PACKAGE_PATH/package.json"`"
-PACKAGE_PRIVATE="`jq -r ".private" "$PACKAGE_PATH/package.json"`"
+cd "$PACKAGE_PATH"
+[ -f "package.json" ] || fail "package.json is required, but I couldn't find it. Pass me --path PACKAGE_DIR with a package.json in it."
+PACKAGE_NAME="`jq -r ".name" package.json`"
+([ "$PACKAGE_NAME" == "" ] || [ "$PACKAGE_NAME" == "null" ]) && fail "Couldn't determine package name. Your package.json needs a \"name\" entry."
+PACKAGE_PRIVATE="`jq -r ".private" package.json`"
+# PACKAGE_VERSION="`jq -r ".version" package.json`"
 if [ "$PACKAGE_PRIVATE" != "null" ]; then
     echo "$PACKAGE_NAME: skipping release of private package"
     exit 0
 fi
+logv "PACKAGE_NAME: '$PACKAGE_NAME'"
 if [ "$PREFIX" == "" ]; then
     PREFIX="$PACKAGE_NAME/v"
 fi
@@ -106,9 +111,3 @@ if [ "$VERSION" != "" ]; then
     # npm version "0.0.0" --no-git-tag-version
     yarn version --new-version "0.0.0" --no-git-tag-version
 fi
-
-# TODO add test cases:
-# private vs non-private package
-# bogus package.json
-# semver-incr-git returns a version vs. empty
-# npm vs yarn
