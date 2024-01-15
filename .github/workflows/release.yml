@@ -28,7 +28,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - uses: devcontainers/ci@v0.3
         with:
-          runCmd: yarn release --execute
+          runCmd: env && yarn release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
