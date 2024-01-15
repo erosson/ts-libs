@@ -11,7 +11,7 @@ For most repositories, this prints a suggested version number based on your comm
 ```console
 $ semver-incr-npm
 v1.2.3
-# this was a dry-run, so the git tag and NPM package weren't pushed:
+$ # this was a dry-run, so the git tag and NPM package weren't pushed:
 $ git show my-package/v1.2.3
 fatal: Failed to resolve 'v1.2.3' as a valid ref.
 $ npm view my-package@v1.2.3
@@ -23,7 +23,7 @@ By default, this is a dry-run - nothing changes. If things look right, release t
 ```console
 $ semver-incr-npm --execute
 v1.2.3
-# the git tag and NPM package were pushed, as intended:
+$ # the git tag and NPM package were pushed, as intended:
 $ git show my-package/v1.2.3
 commit abc123...
 $ npm view my-package@1.2.3
