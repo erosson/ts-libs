@@ -1,0 +1,11 @@
+# https://github.com/marketplace/actions/paths-changes-filter
+# TODO: generate this file from a packages/ directory list
+packages/semver-incr:
+  - 'packages/semver-incr/**'
+  - '.github/workflows/**'
+packages/polynomial:
+  - 'packages/polynomial/**'
+  - '.github/workflows/**'
+packages/arpg-mods:
+  - 'packages/arpg-mods/**'
+  - '.github/workflows/**'

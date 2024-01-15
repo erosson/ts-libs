@@ -5,8 +5,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  # https://github.com/marketplace/actions/paths-changes-filter#examples
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: ./.github/paths-changes-filter.yml
   test:
     runs-on: ubuntu-latest
+    needs: [changes]
+    strategy:
+      matrix:
+        package-path: ${{ fromJSON(needs.changes.outputs.packages) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -14,4 +33,4 @@ jobs:
           submodules: true
       - uses: devcontainers/ci@v0.3
         with:
-          runCmd: yarn test
+          runCmd: yarn --cwd ${{ matrix.package-path }} test

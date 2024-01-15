@@ -26,13 +26,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          filters: |
-            polynomial:
-              - 'packages/polynomial/**'
-              - '.github/workflows/**'
-            semver-incr:
-              - 'packages/semver-incr/**'
-              - '.github/workflows/**'
+          filters: ./.github/paths-changes-filter.yml
 
   docker-build:
     # https://github.com/devcontainers/ci/blob/main/docs/github-action.md
@@ -73,7 +67,7 @@ jobs:
         with:
           cacheFrom: ghcr.io/${{ github.repository }}
           push: never
-          runCmd: yarn --path ${{ matrix.package-path }} test
+          runCmd: yarn --cwd ${{ matrix.package-path }} test
 
   docs-build:
     runs-on: ubuntu-latest
