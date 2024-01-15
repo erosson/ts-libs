@@ -7,11 +7,30 @@ on:
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, don't cancel in-progress runs as we don't want half-finished deployments.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+#concurrency:
+#  group: "pages"
+#  cancel-in-progress: false
 
 jobs:
+  # https://github.com/marketplace/actions/paths-changes-filter#examples
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          polynomial:
+            - 'packages/polynomial/**'
+            - '.github/workflows/**'
+          semver-incr:
+            - 'packages/semver-incr/**'
+            - '.github/workflows/**'
+
   docker-build:
     # https://github.com/devcontainers/ci/blob/main/docs/github-action.md
     # https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
@@ -35,21 +54,23 @@ jobs:
           imageName: ghcr.io/${{ github.repository }}
           cacheFrom: ghcr.io/${{ github.repository }}
           push: always
-          runCmd: yarn test
 
-  #test:
-  #  runs-on: ubuntu-latest
-  #  needs: docker-build
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #      with:
-  #        fetch-depth: 0
-  #        submodules: true
-  #    - uses: devcontainers/ci@v0.3
-  #      with:
-  #        cacheFrom: ghcr.io/${{ github.repository }}
-  #        push: never
-  #        runCmd: yarn test
+  test:
+    runs-on: ubuntu-latest
+    needs: [docker-build, changes]
+    strategy:
+      matrix:
+        package-path: ${{ fromJSON(needs.changes.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: devcontainers/ci@v0.3
+        with:
+          cacheFrom: ghcr.io/${{ github.repository }}
+          push: never
+          runCmd: yarn --path ${{ matrix.package-path }} test
 
   docs-build:
     runs-on: ubuntu-latest
@@ -86,7 +107,10 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: docker-build
+    needs: [docker-build, changes]
+    strategy:
+      matrix:
+        package-path: ${{ fromJSON(needs.changes.outputs.packages) }}
     # permissions:
       # contents: write # to be able to publish a GitHub release
     steps:
@@ -108,7 +132,7 @@ jobs:
         with:
           cacheFrom: ghcr.io/${{ github.repository }}
           push: never
-          runCmd: yarn release --execute
+          runCmd: yarn --cwd ${{ matrix.package-path }} release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
