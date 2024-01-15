@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [changes]
+    # tolerate empty package lists, like if the readme changes. https://github.com/dorny/paths-filter/issues/66
+    if: ${{ needs.changes.outputs.packages != '' && toJson(fromJson(needs.changes.outputs.packages)) != '[]' }}
     strategy:
       matrix:
         package-path: ${{ fromJSON(needs.changes.outputs.packages) }}
