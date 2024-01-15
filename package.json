@@ -8,7 +8,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "release-docs": "rm -rf dist/docs && mkdir -p dist/docs/@erosson && cp docs.html dist/docs && yarn workspaces run release-docs",
+    "release-docs": "rm -rf dist/docs && mkdir -p dist/docs/@erosson && cp docs.html dist/docs/index.html && yarn workspaces run release-docs",
+    "preview-docs": "serve dist/docs",
     "release": "yarn workspaces run release"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
   }
 }
