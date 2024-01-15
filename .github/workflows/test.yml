@@ -8,7 +8,11 @@ on:
 jobs:
   docker-build:
     # https://github.com/devcontainers/ci/blob/main/docs/github-action.md
+    # https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Login to GitHub Container Registry
@@ -19,8 +23,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: devcontainers/ci@v0.3
         with:
-          imageName: ghcr.io/erosson/ts-libs
-          cacheFrom: ghcr.io/erosson/ts-libs
+          imageName: ghcr.io/${{ github.repository }}
+          cacheFrom: ghcr.io/${{ github.repository }}
           push: always
   test:
     runs-on: ubuntu-latest
