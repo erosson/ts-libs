@@ -8,6 +8,7 @@ jobs:
   # https://github.com/marketplace/actions/paths-changes-filter#examples
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       pull-requests: read
     outputs:
@@ -22,6 +23,7 @@ jobs:
           filters: ./.github/paths-changes-filter.yml
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [changes]
     strategy:
       matrix:
