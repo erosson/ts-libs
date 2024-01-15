@@ -34,3 +34,5 @@ jobs:
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: yarn --cwd ${{ matrix.package-path }} test
+        env:
+          CI: ${{ env.CI }}
