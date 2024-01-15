@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "release-docs": "rm -rf dist/docs && mkdir -p dist/docs/@erosson && yarn workspaces run release-docs",
     "release": "yarn workspaces run release"
   }
 }

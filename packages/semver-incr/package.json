@@ -17,6 +17,7 @@
     "semver-incr-git": "semver-incr-git/bin/semver-incr-git"
   },
   "scripts": {
+    "release-docs": "true",
     "release": "semver-incr-npm",
     "test": "bats test"
   }

@@ -26,6 +26,7 @@
     "test": "vitest",
     "// docs": "# typedoc also typechecks",
     "docs": "typedoc",
+    "release-docs": "yarn docs && cp -a public/docs/ ../../dist/docs/@erosson/polynomial/",
     "release": "yarn test --run && yarn build && yarn _release",
     "_release": "semver-incr-npm",
     "preview": "vite preview"
