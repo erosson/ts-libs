@@ -1,6 +1,11 @@
 import { type NumberOps, nativeNumberOps } from "./number-ops";
 import { BisectOptions, findRootBisect, findRootsQuick, isRootBisectable } from "./roots";
 
+export enum EvalMethod {
+  NORMAL = 'normal',
+  HORNER = 'horner',
+}
+
 /**
  * A polynomial instance.
  * 
@@ -120,8 +125,8 @@ export class Polynomial<T = number> {
    * 
    * @group evaluate
    */
-  evaluate(seconds: number): T {
-    return this.evaluateDegree(seconds, 0)
+  evaluate(seconds: number, evalMethod = EvalMethod.NORMAL): T {
+    return this.evaluateDegree(seconds, 0, evalMethod)
   }
 
   /**
@@ -134,19 +139,31 @@ export class Polynomial<T = number> {
    * 
    * @group evaluate
    */
-  evaluateDegree(seconds: number, degree: number): T {
+  evaluateDegree(seconds: number, degree: number, evalMethod = EvalMethod.NORMAL): T {
+    // TODO evaluate using horner's method, as discussed with Yosef. Compare performance.
     let p: Polynomial<T> = this
     if (degree > 0) {
       p = Polynomial.parse(p.coeffs.slice(degree).map((d, i) => this.ops.mul(d, degree + i)), this.ops);
     }
     // special-case for quicker constants
     if (seconds === 0) return p.constantTerm
-    return p.coeffs
-      .map((c, index) => {
-        const ft = Math.pow(seconds, index);
-        return this.ops.mul(c, ft);
-      })
-      .reduce((a, b) => this.ops.add(a, b), this.ops.zero);
+    switch (evalMethod) {
+      case EvalMethod.NORMAL: {
+        // evaluate as `a + bt + ct^2 + dt^3`
+        return p.coeffs
+          .map((c, index) => {
+            const ft = Math.pow(seconds, index);
+            return this.ops.mul(c, ft);
+          })
+          .reduce((a, b) => this.ops.add(a, b), this.ops.zero);
+      }
+      case EvalMethod.HORNER:
+      default: {
+        // evaluate as `a + t(b + t(c + t(d + t(0))))`. no power calculations necessary, same result
+        // https://en.wikipedia.org/wiki/Horner%27s_method
+        return p.coeffs.reduceRight((accum, coeff) => this.ops.add(this.ops.mul(accum, seconds), coeff), this.ops.zero)
+      }
+    }
   }
 
   /**
