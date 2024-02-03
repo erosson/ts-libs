@@ -95,7 +95,7 @@ jobs:
           # push: never
           runCmd: |
             yarn --cwd ${{ matrix.package-path }} release --verbose
-            yarn --cwd ${{ matrix.package-path }} release --execute
+            yarn --cwd ${{ matrix.package-path }} release --verbose --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
