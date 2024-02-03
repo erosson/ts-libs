@@ -94,7 +94,7 @@ jobs:
           # cacheFrom: ghcr.io/${{ github.repository }}
           # push: never
           runCmd: |
-            yarn --cwd ${{ matrix.package-path }} release
+            yarn --cwd ${{ matrix.package-path }} release --verbose
             yarn --cwd ${{ matrix.package-path }} release --execute
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
